@@ -1,0 +1,6 @@
+indexes:
+- kind: Visit
+  properties:
+  - name: target
+  - name: timestamp
+    direction: desc
