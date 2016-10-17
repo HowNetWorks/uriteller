@@ -17,7 +17,8 @@
   "scripts": {
     "start": "node app.js",
     "lint": "eslint --ignore-path .gitignore .",
-    "build": "webpack"
+    "build": "webpack",
+    "deploy": "npm run build && gcloud app deploy app.yaml index.yaml --quiet --version=production"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
