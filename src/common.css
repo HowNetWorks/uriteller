@@ -1,0 +1,20 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  padding-top: 70px;
+  margin-bottom: 80px;
+}
+
+.hidden {
+  display: none;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  height: 80px;
+  width: 100%;
+}

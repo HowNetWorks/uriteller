@@ -2,6 +2,9 @@ if (process.env.NODE_ENV === "production") {
     require("@google/cloud-debug");
 }
 
+const url = require("url");
+const path = require("path");
+const moment = require("moment");
 const crypto = require("crypto");
 const express = require("express");
 const exphbs = require("express-handlebars");
@@ -9,8 +12,13 @@ const gcloud = require("google-cloud")();
 
 const datastore = gcloud.datastore();
 
+function fullUrl(req, path) {
+    let baseUrl = process.env.BASE_URL;
+    return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
+}
+
 function genId() {
-    return crypto.randomBytes(32).toString("hex");
+    return crypto.randomBytes(15).toString("base64").replace(/\//g, "_").replace(/\+/g, "-");
 }
 
 function extractInfo(req) {
@@ -18,6 +26,10 @@ function extractInfo(req) {
         remoteAddress: req.get("x-appengine-user-ip") || req.ip,
         userAgent: req.get("user-agent")
     };
+}
+
+function formatTimestamp(ts) {
+    return moment(ts).format();
 }
 
 function create() {
@@ -118,8 +130,13 @@ const app = express();
 app.engine("handlebars", exphbs({defaultLayout: "main"}));
 app.set("view engine", "handlebars");
 
+app.use("/assets", express.static(path.join(__dirname, "build")));
+
 app.get("/", (req, res) => {
-    res.render("index");
+    res.render("index", {
+        styles: ["/assets/common.css"],
+        scripts: ["/assets/common.js"]
+    });
 });
 
 app.get("/new", (req, res) => {
@@ -141,18 +158,28 @@ app.get("/:id", (req, res) => {
             return res.sendStatus(404);
         }
 
-        if (item.isView) {
-            return list(item.other).then(entities => {
-                res.render("visits", {
-                    "trap": item.other,
-                    "json": JSON.stringify(entities, null, 4)
-                });
+        if (!item.isView) {
+            const timestamp = Date.now();
+            const info = extractInfo(req);
+            return visit(id, timestamp, info).then(() => {
+                res.send("This visit has been logged.");
             });
         }
 
-        const timestamp = Date.now();
-        const info = extractInfo(req);
-        return visit(id, timestamp, info).then(() => res.sendStatus(200));
+        return list(item.other).then(entities => {
+            res.render("visits", {
+                styles: ["/assets/common.css", "/assets/visits.css"],
+                scripts: ["/assets/common.js", "/assets/visits.js"],
+                trapUrl: fullUrl(req, item.other),
+                visits: entities.map(entity => {
+                    return {
+                        timestamp: formatTimestamp(entity.timestamp),
+                        remoteAddress: entity.info.remoteAddress,
+                        userAgent: entity.info.userAgent
+                    };
+                })
+            });
+        });
     }).catch(err => {
         console.error(err);
         res.sendStatus(500);

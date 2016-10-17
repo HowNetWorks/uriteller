@@ -1,4 +1,52 @@
-Tracking visits to <strong>{{trap}}</strong>:
-<pre>
-{{json}}
-</pre>
+<div class="container">
+  <p>
+    <div class="row">
+      <div class="col-sm-12">
+        <h4>
+          Tracking visits to
+        </h4>
+      </div>
+
+      <div class="col-sm-12 col-md-5">
+        <div id="trap-info" class="input-group">
+          <input id="trap-url" type="text" class="form-control" value="{{trapUrl}}" readonly></input>
+          <span class="input-group-btn">
+            <button id="trap-copy" class="btn btn-primary" data-clipboard-target="#trap-url" disabled="disabled">
+              <span class="glyphicon glyphicon-copy"></span>
+              copy
+            </button>:
+          </span>
+        </div>
+      </div>
+    </div>
+  <p>
+
+  <p>
+    <div class="row">
+      <div class="col-md-12">
+        <h3>
+          Visits
+          <span class="badge">{{visits.length}}</span>
+        </h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>IP</th>
+              <th>User Agent</th>
+            </tr>
+          </thead>
+          <tbody>
+          {{#each visits}}
+            <tr>
+              <td>{{timestamp}}</td>
+              <td>{{remoteAddress}}</td>
+              <td>{{userAgent}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+        </table>
+      </div>
+    </div>
+  <p>
+</div>

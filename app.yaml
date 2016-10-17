@@ -1,4 +1,5 @@
 runtime: nodejs
 vm: true
 env_variables:
+  BASE_URL: https://urlgeller-test.appspot.com
   GCLOUD_PROJECT: urlgeller-test
