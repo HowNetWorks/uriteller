@@ -32,9 +32,17 @@ function mergeAndClean(...objs) {
 }
 
 function extractInfo(req) {
+    // Google App Engine passes in an approximate geolocation in header
+    // "x-appengine-country" and uses code "ZZ" for unknown locations.
+    let country = req.get("x-appengine-country");
+    if (!country || country === "ZZ") {
+        country = undefined;
+    }
+
     return mergeAndClean({
         ip: req.get("x-appengine-user-ip") || req.ip,
-        country: req.get("x-appengine-country"),
+        referrer: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
+        country: country,
         userAgent: req.get("user-agent")
     });
 }
@@ -44,6 +52,8 @@ function formatTimestamp(ts) {
 }
 
 const app = express();
+
+app.set("json spaces", 2);
 
 // By default the express-handlebars package searches ./views for view templates
 // and ./views/layouts for layouts.
@@ -63,6 +73,34 @@ app.get("/new", (req, res) => {
     store.create()
         .then(view => {
             res.redirect("/" + view);
+        })
+        .catch(err => {
+            console.error(err);
+            res.sendStatus(500);
+        });
+});
+
+app.get("/:id.json", (req, res) => {
+    const id = req.params.id;
+
+    store.get(id)
+        .then(item => {
+            if (!item || !item.isView) {
+                return res.sendStatus(404);
+            }
+
+            return store.list(item.other).then(entities => {
+                const visits = entities.map(entity => {
+                    return mergeAndClean(entity.info, {
+                        timestamp: formatTimestamp(entity.timestamp)
+                    });
+                });
+
+                res.json({
+                    trapUrl: fullUrl(req, item.other),
+                    visits: visits
+                });
+            });
         })
         .catch(err => {
             console.error(err);
