@@ -1,5 +1,6 @@
 if (process.env.NODE_ENV === "production") {
     require("@google/cloud-debug");
+    require("@google/cloud-trace").start();
 }
 
 const url = require("url");

@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@google/cloud-debug": "^0.8.5",
+    "@google/cloud-trace": "^0.5.8",
     "eslint": "^3.7.1",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
