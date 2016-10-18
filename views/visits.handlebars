@@ -33,6 +33,7 @@
             <tr>
               <th>Time</th>
               <th>IP</th>
+              <th>ASN</th>
               <th>User Agent</th>
             </tr>
           </thead>
@@ -40,7 +41,12 @@
           {{#each visits}}
             <tr>
               <td>{{timestamp}}</td>
-              <td>{{remoteAddress}}</td>
+              <td>{{country.emoji}}&nbsp;{{ip}}</td>
+              <td>
+                {{#each asns}}
+                {{asn}} {{names}}
+                {{/each}}
+              </td>
               <td>{{userAgent}}</td>
             </tr>
           {{/each}}

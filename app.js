@@ -8,6 +8,7 @@ const path = require("path");
 const moment = require("moment");
 const express = require("express");
 const exphbs = require("express-handlebars");
+const emojiFlags = require("emoji-flags");
 const taskQueue = require("./taskqueue");
 const store = require("./store");
 
@@ -16,11 +17,26 @@ function fullUrl(req, path) {
     return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
 }
 
+function mergeAndClean(...objs) {
+    const result = {};
+    objs.forEach(obj => {
+        Object.keys(obj).forEach(key => {
+            if (obj[key] !== undefined) {
+                result[key] = obj[key];
+            } else {
+                delete result[key];
+            }
+        });
+    });
+    return result;
+}
+
 function extractInfo(req) {
-    return {
-        remoteAddress: req.get("x-appengine-user-ip") || req.ip,
+    return mergeAndClean({
+        ip: req.get("x-appengine-user-ip") || req.ip,
+        country: req.get("x-appengine-country"),
         userAgent: req.get("user-agent")
-    };
+    });
 }
 
 function formatTimestamp(ts) {
@@ -74,17 +90,18 @@ app.get("/:id", (req, res) => {
             }
 
             return store.list(item.other).then(entities => {
+                const visits = entities.map(entity => {
+                    return mergeAndClean(entity.info, {
+                        timestamp: formatTimestamp(entity.timestamp),
+                        country: emojiFlags.countryCode(entity.info.country || "-")
+                    });
+                });
+
                 res.render("visits", {
                     styles: ["/assets/common.css", "/assets/visits.css"],
                     scripts: ["/assets/common.js", "/assets/visits.js"],
                     trapUrl: fullUrl(req, item.other),
-                    visits: entities.map(entity => {
-                        return {
-                            timestamp: formatTimestamp(entity.timestamp),
-                            remoteAddress: entity.info.remoteAddress,
-                            userAgent: entity.info.userAgent
-                        };
-                    })
+                    visits: visits
                 });
             });
         })

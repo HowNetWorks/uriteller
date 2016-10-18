@@ -6,6 +6,7 @@ if (process.env.NODE_ENV === "production") {
 const express = require("express");
 const store = require("./store");
 const taskQueue = require("./taskqueue");
+const resolve = require("./resolve");
 
 const app = express();
 
@@ -24,8 +25,11 @@ taskQueue.subscribe("main-topic", "main-subscription", (err, msg) => {
     }
 
     const data = msg.data;
-    store
-        .visit(data.target, data.timestamp, data.info)
+    resolve.ipToASNs(data.info.ip || "")
+        .then(asns => {
+            data.info.asns = asns;
+            return store.visit(data.target, data.timestamp, data.info);
+        })
         .then(() => msg.ack())
         .catch(err => console.error(err));
 });

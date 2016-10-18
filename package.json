@@ -6,10 +6,12 @@
   "dependencies": {
     "@google/cloud-debug": "^0.8.5",
     "@google/cloud-trace": "^0.5.8",
+    "emoji-flags": "^1.2.0",
     "eslint": "^3.7.1",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "google-cloud": "^0.41.2",
+    "ip-address": "^5.8.2",
     "moment": "^2.15.1"
   },
   "engines": {
