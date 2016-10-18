@@ -1,6 +1,7 @@
+service: worker
 runtime: nodejs
 vm: true
 
 env_variables:
-  BASE_URL: https://urlgeller-test.appspot.com
+  SCRIPT: worker.js
   GCLOUD_PROJECT: urlgeller-test
