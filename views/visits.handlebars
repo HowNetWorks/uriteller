@@ -26,9 +26,9 @@
       <div class="col-md-12">
         <h3>
           Visits
-          <span class="badge">{{visits.length}}</span>
+          <span id="visit-count" class="badge">{{visits.length}}</span>
         </h3>
-        <table class="table table-striped">
+        <table id="visit-table" class="table table-striped" data-update-url="{{updateUrl}}" data-update-cursor="{{updateCursor}}">
           <thead>
             <tr>
               <th>Time</th>

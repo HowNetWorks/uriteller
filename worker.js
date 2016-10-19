@@ -31,5 +31,5 @@ taskQueue.subscribe("main-topic", "main-subscription", (err, msg) => {
             return store.visit(data.target, data.timestamp, data.info);
         })
         .then(() => msg.ack())
-        .catch(err => console.error(err));
+        .catch(err => console.error("err", err));
 });

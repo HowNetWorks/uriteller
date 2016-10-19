@@ -2,5 +2,5 @@ indexes:
 - kind: Visit
   properties:
   - name: target
-  - name: timestamp
+  - name: seqId
     direction: desc

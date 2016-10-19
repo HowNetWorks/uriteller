@@ -17,6 +17,20 @@ function fullUrl(req, path) {
     return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
 }
 
+function getCountry(code) {
+    const info = code ? emojiFlags.countryCode(code) : undefined;
+    if (!info) {
+        return {
+            code: code
+        };
+    }
+    return {
+        code: code,
+        name: info.name,
+        emoji: info.emoji
+    };
+}
+
 function mergeAndClean(...objs) {
     const result = {};
     objs.forEach(obj => {
@@ -83,20 +97,29 @@ app.get("/new", (req, res) => {
 app.get("/:id.json", (req, res) => {
     const id = req.params.id;
 
+    let cursor = req.query.cursor;
+    if (Array.isArray(cursor)) {
+        return res.sendStatus(400);
+    } else if (cursor !== undefined) {
+        cursor = Number(cursor);
+    }
+
     store.get(id)
         .then(item => {
             if (!item || !item.isView) {
                 return res.sendStatus(404);
             }
 
-            return store.list(item.other).then(entities => {
+            return store.list(item.other, cursor).then(({ entities, cursor }) => {
                 const visits = entities.map(entity => {
                     return mergeAndClean(entity.info, {
+                        country: getCountry(entity.info.country),
                         timestamp: formatTimestamp(entity.timestamp)
                     });
                 });
 
                 res.json({
+                    cursor: cursor,
                     trapUrl: fullUrl(req, item.other),
                     visits: visits
                 });
@@ -127,11 +150,11 @@ app.get("/:id", (req, res) => {
                 });
             }
 
-            return store.list(item.other).then(entities => {
+            return store.list(item.other).then(({ entities, cursor }) => {
                 const visits = entities.map(entity => {
                     return mergeAndClean(entity.info, {
                         timestamp: formatTimestamp(entity.timestamp),
-                        country: emojiFlags.countryCode(entity.info.country || "-")
+                        country: getCountry(entity.info.country)
                     });
                 });
 
@@ -139,6 +162,8 @@ app.get("/:id", (req, res) => {
                     styles: ["/assets/common.css", "/assets/visits.css"],
                     scripts: ["/assets/common.js", "/assets/visits.js"],
                     trapUrl: fullUrl(req, item.other),
+                    updateUrl: fullUrl(req, id + ".json"),
+                    updateCursor: cursor,
                     visits: visits
                 });
             });

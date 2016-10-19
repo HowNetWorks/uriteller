@@ -3,6 +3,47 @@ const gcloud = require("google-cloud")();
 
 const datastore = gcloud.datastore();
 
+const seqIdCache = new Map();
+
+function getSeqId(target) {
+    const cached = seqIdCache.get(target);
+    if (cached !== undefined) {
+        return Promise.resolve(cached);
+    }
+
+    return querySeqId(target).then(seqId => {
+        setSeqId(target, seqId);
+        return seqId;
+    });
+}
+
+function setSeqId(target, seqId) {
+    const cached = seqIdCache.get(target);
+    if (cached === undefined || cached < seqId) {
+        seqIdCache.set(target, seqId);
+    }
+}
+
+function querySeqId(target) {
+    const query = datastore.createQuery("Visit")
+        .filter("target", target)
+        .select("seqId")
+        .order("seqId", {
+            descending: true
+        })
+        .limit(2);
+
+    return doQuery(query).then(_entities => {
+        const entities = _entities.filter(entity => {
+            return entity.data.seqId !== undefined && !isNaN(entity.data.seqId);
+        });
+        if (entities.length === 0 || entities[0].data.seqId === undefined) {
+            return 0;
+        }
+        return entities[0].data.seqId + 1;
+    });
+}
+
 function genId() {
     return crypto.randomBytes(15).toString("base64").replace(/\//g, "_").replace(/\+/g, "-");
 }
@@ -64,36 +105,70 @@ exports.get = function(id) {
     });
 };
 
-exports.visit = function(target, timestamp, info) {
+function doQuery(query) {
     return new Promise((resolve, reject) => {
-        datastore.save({
-            key: datastore.key(["Visit"]),
+        query.run((err, entities) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(entities);
+            }
+        });
+    });
+}
+
+exports.visit = function(target, timestamp, info) {
+    function insert(seqId, resolve, reject) {
+        datastore.insert({
+            key: datastore.key(["Visit", seqId + "/" + target]),
             data: {
+                seqId: seqId,
                 target: target,
                 timestamp: timestamp,
                 info: info
             }
-        }, err => err ? reject(err) : resolve());
+        }, err => {
+            if (!err) {
+                setSeqId(target, seqId + 1);
+                resolve();
+            } else if (err.code !== 409) {
+                reject(err);
+            } else {
+                insert(seqId + 1, resolve, reject);
+            }
+        });
+    }
+
+    return getSeqId(target).then(seqId => {
+        return new Promise((resolve, reject) => {
+            insert(seqId, resolve, reject);
+        });
     });
 };
 
-exports.list = function(target) {
-    return new Promise((resolve, reject) => {
-        datastore.createQuery("Visit")
-            .filter("target", target)
-            .order("timestamp", {
-                descending: true
-            })
-            .run((err, entities) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(entities.map(entity => {
-                        const obj = Object.assign({}, entity.data);
-                        delete obj.target;
-                        return obj;
-                    }));
+exports.list = function(target, cursor=0) {
+    let query = datastore.createQuery("Visit")
+        .filter("target", target)
+        .filter("seqId", ">=", cursor)
+        .order("seqId", { descending: true });
+
+    return doQuery(query).then(entities => {
+        return {
+            cursor: entities.reduce((previous, entity) => {
+                let seqId = entity.data.seqId;
+                if (seqId === undefined || isNaN(seqId)) {
+                    return previous;
                 }
-            });
+
+                seqId += 1;
+                return seqId > previous ? seqId : previous;
+            }, cursor),
+
+            entities: entities.map(entity => {
+                const obj = Object.assign({}, entity.data);
+                delete obj.target;
+                return obj;
+            })
+        };
     });
 };
