@@ -40,7 +40,11 @@ function fetchUpdates(baseUrl, cursor, interval, callback) {
 
 function col(row, text) {
     const element = document.createElement("td");
-    element.textContent = text.trim() || "\u00a0";
+    if (text && text.trim()) {
+        element.textContent = text.trim();
+    } else {
+        element.textContent = "\u00a0";
+    }
     row.appendChild(element);
 }
 
