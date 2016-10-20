@@ -15,11 +15,12 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: "babel",
                 query: {
-                    presets: [["es2015", {modules: false}]]
+                    presets: [["es2015", {modules: false}], "react"],
+                    plugins: ["transform-object-rest-spread"]
                 }
             },
             {

@@ -1,3 +1,5 @@
+require("babel-register");
+
 if (process.env.NODE_ENV === "production") {
     require("@google/cloud-debug");
     require("@google/cloud-trace").start();
@@ -7,10 +9,16 @@ const url = require("url");
 const path = require("path");
 const moment = require("moment");
 const express = require("express");
-const exphbs = require("express-handlebars");
 const emojiFlags = require("emoji-flags");
+
 const taskQueue = require("./taskqueue");
 const store = require("./store");
+
+const { default: render, create } = require("./src/views/render");
+const { default: Layout } = require("./src/views/Layout");
+const { default: Index } = require("./src/views/Index");
+const { default: Visits } = require("./src/views/Visits");
+const { default: EmbeddedJSON } = require("./src/views/EmbeddedJSON");
 
 function fullUrl(req, path) {
     let baseUrl = process.env.BASE_URL;
@@ -69,18 +77,16 @@ const app = express();
 
 app.set("json spaces", 2);
 
-// By default the express-handlebars package searches ./views for view templates
-// and ./views/layouts for layouts.
-app.engine("handlebars", exphbs({defaultLayout: "main"}));
-app.set("view engine", "handlebars");
-
 app.use("/assets", express.static(path.join(__dirname, "build")));
 
 app.get("/", (req, res) => {
-    res.render("index", {
-        styles: ["/assets/common.css"],
-        scripts: ["/assets/common.js"]
-    });
+    res.send(render(create(
+        Layout, {
+            styles: ["/assets/common.css"],
+            scripts: ["/assets/common.js"]
+        },
+        create(Index)
+    )));
 });
 
 app.get("/new", (req, res) => {
@@ -158,14 +164,21 @@ app.get("/:id", (req, res) => {
                     });
                 });
 
-                res.render("visits", {
-                    styles: ["/assets/common.css", "/assets/visits.css"],
-                    scripts: ["/assets/common.js", "/assets/visits.js"],
+                const initialData = {
                     trapUrl: fullUrl(req, item.other),
                     updateUrl: fullUrl(req, id + ".json"),
                     updateCursor: cursor,
                     visits: visits
-                });
+                };
+
+                res.send(render(create(
+                    Layout, {
+                        styles: ["/assets/common.css", "/assets/visits.css"],
+                        scripts: ["/assets/common.js", "/assets/visits.js"]
+                    },
+                    create(EmbeddedJSON, {id: "initial-data", content: initialData}),
+                    create(Visits, initialData)
+                )));
             });
         })
         .catch(err => {

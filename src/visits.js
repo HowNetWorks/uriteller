@@ -1,13 +1,17 @@
 import url from "url";
-import Clipboard from "clipboard";
+import React from "react";
+import { render } from "react-dom";
 import "whatwg-fetch";
 
+import Visits from "./views/Visits.jsx";
 import "./common.css";
 import "./visits.css";
 
-function hookCopyPaste(element) {
-    new Clipboard(element);
-    element.disabled = false;
+function byTimestampDescending(left, right) {
+    if (left.timestamp === right.timestamp) {
+        return 0;
+    }
+    return left.timestamp < right.timestamp ? 1 : -1;
 }
 
 function timeout(delay) {
@@ -38,40 +42,25 @@ function fetchUpdates(baseUrl, cursor, interval, callback) {
         );
 }
 
-function col(row, text) {
-    const element = document.createElement("td");
-    if (text && text.trim()) {
-        element.textContent = text.trim();
-    } else {
-        element.textContent = "\u00a0";
-    }
-    row.appendChild(element);
-}
+function updateTable(_props, rootElement) {
+    let props = _props;
+    render(<Visits {...props} />, rootElement);
 
-function updateTable(element, counts) {
-    const baseUrl = element.dataset.updateUrl;
-    const cursor = element.dataset.updateCursor;
-
+    const baseUrl = props.updateUrl;
+    const cursor = props.updateCursor;
     fetchUpdates(baseUrl, cursor, 1000, function(err, visits) {
         if (err) {
             console.error(err);
             return;
         }
 
-        const body = element.tBodies[0];
-        visits.forEach(visit => {
-            const row = document.createElement("tr");
-            col(row, visit.timestamp);
-            col(row, (visit.country.emoji || "") + "\u00a0" + visit.ip);
-            col(row, visit.asns.map(asn => {
-                return asn.asn + " " + asn.names.join(", ");
-            }).join("\n"));
-            col(row, visit.userAgent);
-            body.insertBefore(row, body.firstChild);
+        props = Object.assign({}, props, {
+            visits: props.visits.concat(visits).sort(byTimestampDescending)
         });
-        counts.textContent = body.children.length;
+        render(<Visits {...props} />, rootElement);
     });
 }
 
-hookCopyPaste(document.getElementById("trap-copy"));
-updateTable(document.getElementById("visit-table"), document.getElementById("visit-count"));
+const initialData = JSON.parse(document.getElementById("initial-data").textContent);
+const rootElement = document.getElementById("app");
+updateTable(initialData, rootElement);

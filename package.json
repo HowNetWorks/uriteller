@@ -1,17 +1,22 @@
 {
   "name": "urlgeller",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "dependencies": {
     "@google/cloud-debug": "^0.8.5",
     "@google/cloud-trace": "^0.5.8",
+    "babel-plugin-transform-es2015-destructuring": "^6.16.0",
+    "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-register": "^6.16.3",
     "emoji-flags": "^1.2.0",
     "express": "^4.14.0",
-    "express-handlebars": "^3.0.0",
     "google-cloud": "^0.41.2",
     "ip-address": "^5.8.2",
-    "moment": "^2.15.1"
+    "moment": "^2.15.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
   },
   "engines": {
     "node": "^6.0.0"
@@ -28,12 +33,22 @@
     "babel-preset-es2015": "^6.16.0",
     "bootstrap": "^3.3.7",
     "clean-webpack-plugin": "^0.1.13",
-    "clipboard": "^1.5.12",
     "css-loader": "^0.25.0",
     "eslint": "^3.8.1",
+    "eslint-plugin-react": "^6.4.1",
     "extract-text-webpack-plugin": "beta",
     "url-loader": "^0.5.7",
     "webpack": "beta",
     "whatwg-fetch": "^1.0.0"
+  },
+  "babel": {
+    "presets": [
+      "react"
+    ],
+    "plugins": [
+      "transform-es2015-modules-commonjs",
+      "transform-es2015-destructuring",
+      "transform-object-rest-spread"
+    ]
   }
 }
