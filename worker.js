@@ -4,7 +4,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const express = require("express");
-const store = require("./store");
+const store = require("./src/store");
 const taskQueue = require("./taskqueue");
 const resolve = require("./resolve");
 

@@ -3,6 +3,13 @@ const gcloud = require("google-cloud")();
 
 const datastore = gcloud.datastore();
 
+// Return a string id with at least `n` bits of randomness. The returned string
+// will contain only characters [a-zA-Z0-9_-].
+function genId(n=128) {
+    const bytes = crypto.randomBytes(Math.ceil(n / 8.0));
+    return bytes.toString("base64").replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
+}
+
 const seqIdCache = new Map();
 
 function getSeqId(target) {
@@ -44,9 +51,6 @@ function querySeqId(target) {
     });
 }
 
-function genId() {
-    return crypto.randomBytes(15).toString("base64").replace(/\//g, "_").replace(/\+/g, "-");
-}
 
 exports.create = function() {
     function tryCreate(transaction, resolve, reject) {

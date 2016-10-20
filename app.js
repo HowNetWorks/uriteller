@@ -12,7 +12,7 @@ const express = require("express");
 const emojiFlags = require("emoji-flags");
 
 const taskQueue = require("./taskqueue");
-const store = require("./store");
+const store = require("./src/store");
 
 const { default: render, create } = require("./src/views/render");
 const { default: Layout } = require("./src/views/Layout");
