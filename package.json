@@ -7,6 +7,7 @@
     "@google/cloud-debug": "^0.8.5",
     "@google/cloud-trace": "^0.5.8",
     "babel-plugin-transform-es2015-destructuring": "^6.16.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.16.0",
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-register": "^6.16.3",
