@@ -116,18 +116,16 @@ app.get("/:id.json", (req, res) => {
                 return res.sendStatus(404);
             }
 
-            return store.list(item.other, cursor).then(({ entities, cursor }) => {
-                const visits = entities.map(entity => {
-                    return mergeAndClean(entity.info, {
-                        country: getCountry(entity.info.country),
-                        timestamp: formatTimestamp(entity.timestamp)
-                    });
-                });
-
+            return store.list(item.other, cursor).then(({ cursor, visits }) => {
                 res.json({
                     cursor: cursor,
                     trapUrl: fullUrl(req, item.other),
-                    visits: visits
+                    visits: visits.map(entity => {
+                        return mergeAndClean(entity.info, {
+                            country: getCountry(entity.info.country),
+                            timestamp: formatTimestamp(entity.timestamp)
+                        });
+                    })
                 });
             });
         })
@@ -156,19 +154,17 @@ app.get("/:id", (req, res) => {
                 });
             }
 
-            return store.list(item.other).then(({ entities, cursor }) => {
-                const visits = entities.map(entity => {
-                    return mergeAndClean(entity.info, {
-                        timestamp: formatTimestamp(entity.timestamp),
-                        country: getCountry(entity.info.country)
-                    });
-                });
-
+            return store.list(item.other).then(({ cursor, visits }) => {
                 const initialData = {
                     trapUrl: fullUrl(req, item.other),
                     updateUrl: fullUrl(req, id + ".json"),
                     updateCursor: cursor,
-                    visits: visits
+                    visits: visits.map(entity => {
+                        return mergeAndClean(entity.info, {
+                            timestamp: formatTimestamp(entity.timestamp),
+                            country: getCountry(entity.info.country)
+                        });
+                    })
                 };
 
                 res.send(render(create(

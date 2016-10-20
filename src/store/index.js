@@ -124,32 +124,59 @@ function doQuery(query) {
     });
 }
 
+const visits = new Map();
+const VISIT_CHUNK_COUNT = 10;
+
 exports.visit = function(target, timestamp, info) {
-    function insert(seqId, resolve, reject) {
+    function insert(seqId) {
+        const queue = visits.get(target);
+        if (!queue) {
+            return;
+        }
+
+        const chunk = queue.slice(0, VISIT_CHUNK_COUNT);
         datastore.insert({
             key: seqIdKey(target, seqId),
             data: {
-                seqId: seqId,
                 target: target,
-                timestamp: timestamp,
-                info: info
+                seqId: seqId,
+                visits: chunk.map(visit => visit.data)
             }
         }, err => {
-            if (!err) {
+            if (err && err.code === 409) {
                 setSeqId(target, seqId + 1);
-                resolve();
-            } else if (err.code !== 409) {
-                reject(err);
+                return insert(seqId + 1);
+            }
+
+            if (err) {
+                chunk.forEach(visit => visit.reject(err));
             } else {
-                insert(seqId + 1, resolve, reject);
+                setSeqId(target, seqId + 1);
+                chunk.forEach(visit => visit.resolve());
+            }
+
+            queue.splice(0, chunk.length);
+            if (queue.length === 0) {
+                visits.delete(target);
             }
         });
     }
 
-    return getSeqId(target).then(seqId => {
-        return new Promise((resolve, reject) => {
-            insert(seqId, resolve, reject);
+    return new Promise((resolve, reject) => {
+        const queue = visits.get(target) || [];
+        visits.set(target, queue);
+        queue.push({
+            resolve: resolve,
+            reject: reject,
+            data: {
+                timestamp: timestamp,
+                info: info
+            }
         });
+
+        if (queue.length ===  1) {
+            getSeqId(target).then(insert);
+        }
     });
 };
 
@@ -188,6 +215,7 @@ exports.list = function(target, cursor=0) {
                 return seqId > previous ? seqId : previous;
             }, cursor);
 
+
             const available = new Set(entities.map(entity => entity.seqId));
             const missing = [];
             for (var i = cursor; i < nextCursor; i++) {
@@ -196,15 +224,24 @@ exports.list = function(target, cursor=0) {
                 }
             }
 
-            return getSeqIds(missing).then(newEntities => {
+            return getSeqIds(target, missing).then(newEntities => {
                 return {
                     cursor: nextCursor,
-                    entities: newEntities.concat(entities).map(entity => {
-                        const obj = Object.assign({}, entity.data);
-                        delete obj.target;
-                        return obj;
-                    })
+                    entities: entities.concat(newEntities)
                 };
             });
+        })
+        .then(({ cursor, entities }) => {
+            const visits = [];
+            entities.forEach(entity => {
+                entity.data.visits.forEach(visit => {
+                    visits.push(visit);
+                });
+            });
+
+            return {
+                cursor: cursor,
+                visits: visits
+            };
         });
 };
