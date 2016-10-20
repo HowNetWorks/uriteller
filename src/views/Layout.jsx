@@ -5,7 +5,7 @@ export default function Layout(props) {
         <html>
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <title>{props.title}</title>
+                <title>URI:teller</title>
 
                 {props.styles.map((href, index) => <link key={index} rel="stylesheet" href={href} />)}
             </head>
