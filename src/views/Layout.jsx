@@ -15,7 +15,7 @@ export default function Layout(props) {
                     <div className="container">
                         <div className="navbar-header">
                             <a className="navbar-brand" href="#">
-                            URL:geller
+                            URI:teller
                             </a>
                         </div>
                     </div>
