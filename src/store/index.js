@@ -51,6 +51,9 @@ function querySeqId(target) {
     });
 }
 
+function seqIdKey(target, seqId) {
+    return datastore.key(["Visit", seqId + "/" + target]);
+}
 
 exports.create = function() {
     function tryCreate(transaction, resolve, reject) {
@@ -124,7 +127,7 @@ function doQuery(query) {
 exports.visit = function(target, timestamp, info) {
     function insert(seqId, resolve, reject) {
         datastore.insert({
-            key: datastore.key(["Visit", seqId + "/" + target]),
+            key: seqIdKey(target, seqId),
             data: {
                 seqId: seqId,
                 target: target,
@@ -150,29 +153,58 @@ exports.visit = function(target, timestamp, info) {
     });
 };
 
+function getSeqIds(target, seqIds) {
+    if (seqIds.length === 0) {
+        return Promise.resolve([]);
+    }
+
+    return new Promise((resolve, reject) => {
+        const keys = seqIds.map(seqId => seqIdKey(target, seqId));
+        datastore.get(keys, (err, entities) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(entities);
+        });
+    });
+}
+
 exports.list = function(target, cursor=0) {
     let query = datastore.createQuery("Visit")
         .filter("target", target)
         .filter("seqId", ">=", cursor)
         .order("seqId", { descending: true });
 
-    return doQuery(query).then(entities => {
-        return {
-            cursor: entities.reduce((previous, entity) => {
+    return doQuery(query)
+        .then(entities => {
+            return entities.filter(entity => {
                 let seqId = entity.data.seqId;
-                if (seqId === undefined || isNaN(seqId)) {
-                    return previous;
-                }
-
-                seqId += 1;
+                return seqId !== undefined & !isNaN(seqId);
+            });
+        })
+        .then(entities => {
+            const nextCursor = entities.reduce((previous, entity) => {
+                let seqId = entity.data.seqId + 1;
                 return seqId > previous ? seqId : previous;
-            }, cursor),
+            }, cursor);
 
-            entities: entities.map(entity => {
-                const obj = Object.assign({}, entity.data);
-                delete obj.target;
-                return obj;
-            })
-        };
-    });
+            const available = new Set(entities.map(entity => entity.seqId));
+            const missing = [];
+            for (var i = cursor; i < nextCursor; i++) {
+                if (available.has(i)) {
+                    missing.push(i);
+                }
+            }
+
+            return getSeqIds(missing).then(newEntities => {
+                return {
+                    cursor: nextCursor,
+                    entities: newEntities.concat(entities).map(entity => {
+                        const obj = Object.assign({}, entity.data);
+                        delete obj.target;
+                        return obj;
+                    })
+                };
+            });
+        });
 };
