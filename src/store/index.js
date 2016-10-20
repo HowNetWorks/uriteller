@@ -10,28 +10,30 @@ function genId(n=128) {
     return bytes.toString("base64").replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
 }
 
-const seqIdCache = new Map();
+const cache = new Map();
 
 function getSeqId(target) {
-    const cached = seqIdCache.get(target);
-    if (cached !== undefined) {
-        return Promise.resolve(cached);
+    if (cache.has(target)) {
+        return Promise.resolve(cache.get(target) + 1);
     }
 
-    return querySeqId(target).then(seqId => {
-        setSeqId(target, seqId);
-        return seqId;
+    return queryMaxSeqId(target).then(seqId => {
+        if (seqId === null) {
+            return 0;
+        }
+        seenSeqId(seqId);
+        return seqId + 1;
     });
 }
 
-function setSeqId(target, seqId) {
-    const cached = seqIdCache.get(target);
+function seenSeqId(target, seqId) {
+    const cached = cache.get(target);
     if (cached === undefined || cached < seqId) {
-        seqIdCache.set(target, seqId);
+        cache.set(target, seqId);
     }
 }
 
-function querySeqId(target) {
+function queryMaxSeqId(target) {
     const query = datastore.createQuery("Visit")
         .filter("target", target)
         .select("seqId")
@@ -45,11 +47,12 @@ function querySeqId(target) {
             return entity.data.seqId !== undefined && !isNaN(entity.data.seqId);
         });
         if (entities.length === 0 || entities[0].data.seqId === undefined) {
-            return 0;
+            return null;
         }
-        return entities[0].data.seqId + 1;
+        return entities[0].data.seqId;
     });
 }
+
 
 function seqIdKey(target, seqId) {
     return datastore.key(["Visit", seqId + "/" + target]);
@@ -144,14 +147,15 @@ exports.visit = function(target, timestamp, info) {
             }
         }, err => {
             if (err && err.code === 409) {
-                setSeqId(target, seqId + 1);
+                console.log("miss", seqId);
+                seenSeqId(target, seqId);
                 return insert(seqId + 1);
             }
 
             if (err) {
                 chunk.forEach(visit => visit.reject(err));
             } else {
-                setSeqId(target, seqId + 1);
+                seenSeqId(target, seqId);
                 chunk.forEach(visit => visit.resolve());
             }
 
@@ -214,7 +218,6 @@ exports.list = function(target, cursor=0) {
                 let seqId = entity.data.seqId + 1;
                 return seqId > previous ? seqId : previous;
             }, cursor);
-
 
             const available = new Set(entities.map(entity => entity.seqId));
             const missing = [];

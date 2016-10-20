@@ -1,9 +1,14 @@
+const net = require("net");
 const dns = require("dns");
 const ipAddress = require("ip-address");
 
 const OK_DNS_ERRORS = new Set([dns.NODATA, dns.NOTFOUND]);
 
 exports.reverse = function(ip) {
+    if (!net.isIP(ip)) {
+        return Promise.resolve([]);
+    }
+
     return new Promise((resolve, reject) => {
         dns.reverse(ip, (err, hostnames) => {
             if (err) {
@@ -14,18 +19,19 @@ exports.reverse = function(ip) {
     });
 };
 
-exports.ipToASNs = function(value) {
-    const ipv4 = new ipAddress.Address4(value);
-    if (ipv4.isValid()) {
-        return lookup(ipv4.toArray().reverse().join(".") + ".origin.asn.cymru.com");
-    }
+exports.ipToASNs = function(ip) {
+    if (net.isIP(ip)) {
+        const ipv4 = new ipAddress.Address4(ip);
+        if (ipv4.isValid()) {
+            return lookup(ipv4.toArray().reverse().join(".") + ".origin.asn.cymru.com");
+        }
 
-    const ipv6 = new ipAddress.Address6(value);
-    if (ipv6.isValid()) {
-        return lookup(ipv6.reverseForm({ omitSuffix: true }) + ".origin6.asn.cymru.com");
+        const ipv6 = new ipAddress.Address6(ip);
+        if (ipv6.isValid()) {
+            return lookup(ipv6.reverseForm({ omitSuffix: true }) + ".origin6.asn.cymru.com");
+        }
     }
-
-    return Promise.resolve(null);
+    return Promise.resolve([]);
 };
 
 function lookup(name) {
