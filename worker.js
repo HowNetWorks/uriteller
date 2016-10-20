@@ -25,8 +25,10 @@ taskQueue.subscribe("main-topic", "main-subscription", (err, msg) => {
     }
 
     const data = msg.data;
-    resolve.ipToASNs(data.info.ip || "")
-        .then(asns => {
+    const ip = data.info.ip;
+    Promise.all([resolve.ipToASNs(ip),  resolve.reverse(ip)])
+        .then(([asns, reverse]) => {
+            data.info.reverse = reverse;
             data.info.asns = asns;
             return store.visit(data.target, data.timestamp, data.info);
         })

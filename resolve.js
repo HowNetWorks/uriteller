@@ -3,6 +3,17 @@ const ipAddress = require("ip-address");
 
 const OK_DNS_ERRORS = new Set([dns.NODATA, dns.NOTFOUND]);
 
+exports.reverse = function(ip) {
+    return new Promise((resolve, reject) => {
+        dns.reverse(ip, (err, hostnames) => {
+            if (err) {
+                return OK_DNS_ERRORS.has(err.code) ? resolve([]) : reject(err);
+            }
+            return resolve(hostnames);
+        });
+    });
+};
+
 exports.ipToASNs = function(value) {
     const ipv4 = new ipAddress.Address4(value);
     if (ipv4.isValid()) {
