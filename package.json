@@ -29,6 +29,7 @@
     "deploy": "npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
   },
   "devDependencies": {
+    "assets-webpack-plugin": "^3.5.0",
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.16.0",
@@ -38,7 +39,7 @@
     "eslint": "^3.8.1",
     "eslint-plugin-react": "^6.4.1",
     "extract-text-webpack-plugin": "beta",
-    "url-loader": "^0.5.7",
+    "file-loader": "^0.9.0",
     "webpack": "beta",
     "whatwg-fetch": "^1.0.0"
   },

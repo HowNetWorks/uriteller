@@ -13,12 +13,17 @@ const emojiFlags = require("emoji-flags");
 
 const taskQueue = require("./taskqueue");
 const store = require("./src/store");
+const assets = require("./build/assets.json");
 
 const { default: render, create } = require("./src/views/render");
 const { default: Layout } = require("./src/views/Layout");
 const { default: Index } = require("./src/views/Index");
 const { default: Visits } = require("./src/views/Visits");
 const { default: EmbeddedJSON } = require("./src/views/EmbeddedJSON");
+
+function asset(name, kind) {
+    return url.resolve("/assets/", assets[name][kind]);
+}
 
 function fullUrl(req, path) {
     let baseUrl = process.env.BASE_URL;
@@ -77,13 +82,13 @@ const app = express();
 
 app.set("json spaces", 2);
 
-app.use("/assets", express.static(path.join(__dirname, "build")));
+app.use("/assets", express.static(path.join(__dirname, "build/assets"), { maxAge: "365d" }));
 
 app.get("/", (req, res) => {
     res.send(render(create(
         Layout, {
-            styles: ["/assets/common.css"],
-            scripts: ["/assets/common.js"]
+            styles: [asset("common", "css")],
+            scripts: [asset("common", "js")]
         },
         create(Index)
     )));
@@ -169,8 +174,8 @@ app.get("/:id", (req, res) => {
 
                 res.send(render(create(
                     Layout, {
-                        styles: ["/assets/common.css", "/assets/visits.css"],
-                        scripts: ["/assets/common.js", "/assets/visits.js"]
+                        styles: [asset("common", "css"), asset("visit", "css")],
+                        scripts: [asset("common", "js"), asset("visit", "js")]
                     },
                     create(EmbeddedJSON, {id: "initial-data", content: initialData}),
                     create(Visits, initialData)
