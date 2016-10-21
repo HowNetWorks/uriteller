@@ -4,7 +4,9 @@ const AssetsPlugin = require("assets-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 
-module.exports = {
+const production = process.env.NODE_ENV === "production";
+
+const config = {
     entry: {
         common: path.join(__dirname, "src/common.js"),
         visits: path.join(__dirname, "src/visits.js")
@@ -35,10 +37,37 @@ module.exports = {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(["build"]),
-        new webpack.optimize.CommonsChunkPlugin({ name: "common", filename: "common-[chunkhash].js"}),
+        new CleanWebpackPlugin([
+            "build"
+        ]),
+        new webpack.DefinePlugin({
+            "process.env": {
+                "NODE_ENV": JSON.stringify(production ? "production" : "development")
+            }
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: "common",
+            filename: "common-[chunkhash].js"
+        }),
         new ExtractTextPlugin("[name]-[contenthash].css"),
-        new AssetsPlugin({ path: path.join(__dirname, "build"), filename: "assets.json", prettyPrint: true })
+        new AssetsPlugin({
+            path: path.join(__dirname, "build"),
+            filename: "assets.json",
+            prettyPrint: true
+        })
     ],
     devtool: "source-map"
 };
+
+if (production) {
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            },
+            mangle: true
+        })
+    );
+}
+
+module.exports = config;

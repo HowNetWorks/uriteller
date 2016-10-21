@@ -174,8 +174,8 @@ app.get("/:id", (req, res) => {
 
                 res.send(render(create(
                     Layout, {
-                        styles: [asset("common", "css"), asset("visit", "css")],
-                        scripts: [asset("common", "js"), asset("visit", "js")]
+                        styles: [asset("common", "css"), asset("visits", "css")],
+                        scripts: [asset("common", "js"), asset("visits", "js")]
                     },
                     create(EmbeddedJSON, {id: "initial-data", content: initialData}),
                     create(Visits, initialData)

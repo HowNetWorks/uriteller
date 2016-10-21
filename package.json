@@ -26,7 +26,7 @@
     "start": "node ${SCRIPT:-app.js}",
     "lint": "eslint --ignore-path .gitignore .",
     "build": "webpack",
-    "deploy": "npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
+    "deploy": "NODE_ENV=production npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
   },
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.0",
