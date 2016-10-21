@@ -14,9 +14,7 @@ export default function Layout(props) {
                 <nav className="navbar navbar-default navbar-fixed-top">
                     <div className="container">
                         <div className="navbar-header">
-                            <a className="navbar-brand" href="#">
-                            URI:teller
-                            </a>
+                            <a className="navbar-brand" href="/">URI:teller</a>
                         </div>
                     </div>
                 </nav>
