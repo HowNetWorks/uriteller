@@ -37,3 +37,9 @@ export default function Layout(props) {
         </html>
     );
 }
+
+Layout.propTypes = {
+    styles: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    scripts: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    children: React.PropTypes.node
+};

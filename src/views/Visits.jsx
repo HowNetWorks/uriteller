@@ -40,3 +40,8 @@ export default function Visits(props) {
         </div>
     );
 }
+
+Visits.propTypes = {
+    trapUrl: React.PropTypes.string.isRequired,
+    visits: React.PropTypes.array.isRequired
+};

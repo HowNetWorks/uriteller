@@ -13,3 +13,15 @@ export default function EmbeddedJSON(props) {
     let { content, ...rest } = props;
     return <script type="application/json" dangerouslySetInnerHTML={stringify(content)} {...rest} />;
 }
+
+EmbeddedJSON.propTypes = {
+    content: function(props, propName, componentName) {
+        try {
+            if (JSON.stringify(props[propName]) === undefined) {
+                return new Error(`Invalid prop \`${propName}\` supplied to \`${componentName}\`. Validation failed.`);
+            }
+        } catch (err) {
+            return err;
+        }
+    }
+};
