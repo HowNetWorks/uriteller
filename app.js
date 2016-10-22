@@ -7,8 +7,6 @@ if (process.env.NODE_ENV === "production") {
     require("@google/cloud-trace").start();
 }
 
-require("babel-register");
-
 const url = require("url");
 const path = require("path");
 const moment = require("moment");

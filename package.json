@@ -6,11 +6,11 @@
   "dependencies": {
     "@google/cloud-debug": "^0.8.5",
     "@google/cloud-trace": "^0.5.8",
+    "babel-cli": "^6.16.0",
     "babel-plugin-transform-es2015-destructuring": "^6.16.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.16.0",
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-preset-react": "^6.16.0",
-    "babel-register": "^6.16.3",
     "emoji-flags": "^1.2.0",
     "express": "^4.14.0",
     "google-cloud": "^0.41.2",
@@ -23,7 +23,7 @@
     "node": "^6.0.0"
   },
   "scripts": {
-    "start": "node ${SCRIPT:-app.js}",
+    "start": "babel-node ${SCRIPT:-app.js}",
     "lint": "eslint --ignore-path .gitignore .",
     "build": "webpack",
     "deploy": "NODE_ENV=production npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
