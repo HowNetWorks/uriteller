@@ -59,23 +59,20 @@ function seqIdKey(target, seqId) {
 }
 
 exports.create = function() {
-    function tryCreate(transaction, resolve, reject) {
+    function tryCreate(resolve, reject) {
         const trap = genId();
         const view = genId();
 
         const trapKey = datastore.key(["Item", trap]);
         const viewKey = datastore.key(["Item", view]);
 
-        transaction.get([trapKey, viewKey], (err, entities) => {
+        const transaction = datastore.transaction();
+        transaction.run(err => {
             if (err) {
-                return transaction.rollback(_err => reject(_err || err));
+                return reject(err);
             }
 
-            if (entities.length > 0) {
-                return tryCreate(transaction);
-            }
-
-            transaction.save([
+            transaction.insert([
                 {
                     key: trapKey,
                     data: {
@@ -91,13 +88,20 @@ exports.create = function() {
                     }
                 }
             ]);
-            transaction.commit(err => err ? reject(err) : resolve(view));
+            transaction.commit(err => {
+                if (err && err.code === 409) {
+                    return tryCreate(resolve, reject);
+                }
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(view);
+            });
         });
     }
 
     return new Promise((resolve, reject) => {
-        const transaction = datastore.transaction();
-        transaction.run(err => err ? reject(err) : tryCreate(transaction, resolve, reject));
+        tryCreate(resolve, reject);
     });
 };
 
