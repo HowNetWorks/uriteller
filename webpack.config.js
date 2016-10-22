@@ -8,8 +8,8 @@ const production = process.env.NODE_ENV === "production";
 
 const config = {
     entry: {
-        common: path.join(__dirname, "src/common.js"),
-        visits: path.join(__dirname, "src/visits.js")
+        common: path.join(__dirname, "browser/common.js"),
+        visits: path.join(__dirname, "browser/visits.js")
     },
     output: {
         path: path.join(__dirname, "build/assets"),

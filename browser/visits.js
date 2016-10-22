@@ -3,7 +3,7 @@ import React from "react";
 import { render } from "react-dom";
 import "whatwg-fetch";
 
-import Visits from "./views/Visits.jsx";
+import Visits from "../lib/views/Visits.jsx";
 import "./common.css";
 import "./visits.css";
 

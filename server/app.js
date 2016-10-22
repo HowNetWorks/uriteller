@@ -13,15 +13,15 @@ const moment = require("moment");
 const express = require("express");
 const emojiFlags = require("emoji-flags");
 
-const taskQueue = require("./taskqueue");
-const store = require("./src/store");
-const assets = require("./build/assets.json");
+const taskQueue = require("./lib/taskqueue");
+const store = require("./lib/store");
+const assets = require("../build/assets.json");
 
-const { default: render, create } = require("./src/views/render");
-const { default: Layout } = require("./src/views/Layout");
-const { default: Index } = require("./src/views/Index");
-const { default: Visits } = require("./src/views/Visits");
-const { default: EmbeddedJSON } = require("./src/views/EmbeddedJSON");
+const { default: render, create } = require("../lib/views/render");
+const { default: Layout } = require("../lib/views/Layout");
+const { default: Index } = require("../lib/views/Index");
+const { default: Visits } = require("../lib/views/Visits");
+const { default: EmbeddedJSON } = require("../lib/views/EmbeddedJSON");
 
 function asset(name, kind) {
     return url.resolve("/assets/", assets[name][kind]);
