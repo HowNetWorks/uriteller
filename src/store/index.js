@@ -147,7 +147,6 @@ exports.visit = function(target, timestamp, info) {
             }
         }, err => {
             if (err && err.code === 409) {
-                console.log("miss", seqId);
                 seenSeqId(target, seqId);
                 return insert(seqId + 1);
             }
