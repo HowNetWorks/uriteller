@@ -84,7 +84,7 @@ const app = express();
 
 app.set("json spaces", 2);
 
-app.use("/assets", express.static(path.join(__dirname, "build/assets"), { maxAge: "365d" }));
+app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
 
 app.get("/", (req, res) => {
     res.send(render(create(
