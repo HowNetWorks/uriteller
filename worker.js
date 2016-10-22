@@ -1,3 +1,7 @@
+if (!process.env.GCLOUD_PROJECT) {
+    process.env.GCLOUD_PROJECT = process.env.GAE_LONG_APP_ID;
+}
+
 if (process.env.NODE_ENV === "production") {
     require("@google/cloud-debug");
     require("@google/cloud-trace").start();

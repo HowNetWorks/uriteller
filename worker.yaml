@@ -4,4 +4,3 @@ vm: true
 
 env_variables:
   SCRIPT: worker.js
-  GCLOUD_PROJECT: urlgeller-test
