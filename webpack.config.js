@@ -28,7 +28,14 @@ const config = {
             },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract(["css"])
+                loader: ExtractTextPlugin.extract([
+                    {
+                        loader: "css",
+                        query: {
+                            minimize: production
+                        }
+                    }
+                ])
             },
             {
                 test: /\.(eot|woff2|woff|ttf|svg)$/,
