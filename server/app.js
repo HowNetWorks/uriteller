@@ -7,6 +7,7 @@ if (process.env.NODE_ENV === "production") {
     require("@google/cloud-trace").start();
 }
 
+const fs = require("fs");
 const url = require("url");
 const path = require("path");
 const moment = require("moment");
@@ -15,7 +16,6 @@ const emojiFlags = require("emoji-flags");
 
 const taskQueue = require("./lib/taskqueue");
 const store = require("./lib/store");
-const assets = require("../build/assets.json");
 
 const { default: render, create } = require("../lib/views/render");
 const { default: Layout } = require("../lib/views/Layout");
@@ -23,8 +23,18 @@ const { default: Index } = require("../lib/views/Index");
 const { default: Visits } = require("../lib/views/Visits");
 const { default: EmbeddedJSON } = require("../lib/views/EmbeddedJSON");
 
+function loadAssetMap() {
+    const assetMapPath = path.join(__dirname, "../build/assets.json");
+    return JSON.parse(fs.readFileSync(assetMapPath));
+}
+
+let assetMap = loadAssetMap();
+
 function asset(name, kind) {
-    return url.resolve("/assets/", assets[name][kind]);
+    if (process.env.NODE_ENV !== "production") {
+        assetMap = loadAssetMap();
+    }
+    return url.resolve("/assets/", assetMap[name][kind]);
 }
 
 function fullUrl(req, path) {
