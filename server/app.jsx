@@ -7,21 +7,22 @@ if (process.env.NODE_ENV === "production") {
     require("@google/cloud-trace").start();
 }
 
-const fs = require("fs");
-const url = require("url");
-const path = require("path");
-const moment = require("moment");
-const express = require("express");
-const emojiFlags = require("emoji-flags");
+import fs from "fs";
+import url from "url";
+import path from "path";
+import React from "react";
+import moment from "moment";
+import express from "express";
+import emojiFlags from "emoji-flags";
 
-const taskQueue = require("./lib/taskqueue");
-const store = require("./lib/store");
+import taskQueue from "./lib/taskqueue";
+import store from "./lib/store";
+import render from "./lib/render";
 
-const { default: render, create } = require("../lib/views/render");
-const { default: Layout } = require("../lib/views/Layout");
-const { default: Index } = require("../lib/views/Index");
-const { default: Visits } = require("../lib/views/Visits");
-const { default: EmbeddedJSON } = require("../lib/views/EmbeddedJSON");
+import Layout from "../lib/views/Layout";
+import Index from "../lib/views/Index";
+import Visits from "../lib/views/Visits";
+import EmbeddedJSON from "../lib/views/EmbeddedJSON";
 
 function loadAssetMap() {
     const assetMapPath = path.join(__dirname, "../build/assets.json");
@@ -97,13 +98,9 @@ app.set("json spaces", 2);
 app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
 
 app.get("/", (req, res) => {
-    res.send(render(create(
-        Layout, {
-            styles: [asset("common", "css")],
-            scripts: [asset("common", "js")]
-        },
-        create(Index)
-    )));
+    const styles = [asset("common", "css")];
+    const scripts = [asset("common", "js")];
+    res.send(render(<Layout styles={styles} scripts={scripts}><Index /></Layout>));
 });
 
 app.get("/new", (req, res) => {
@@ -184,14 +181,14 @@ app.get("/:id", (req, res) => {
                     })
                 };
 
-                res.send(render(create(
-                    Layout, {
-                        styles: [asset("common", "css"), asset("visits", "css")],
-                        scripts: [asset("common", "js"), asset("visits", "js")]
-                    },
-                    create(EmbeddedJSON, {id: "initial-data", content: initialData}),
-                    create(Visits, initialData)
-                )));
+                const styles = [asset("common", "css"), asset("visits", "css")];
+                const scripts = [asset("common", "js"), asset("visits", "js")];
+                res.send(render(
+                    <Layout styles={styles} scripts={scripts}>
+                        <EmbeddedJSON id="initial-data" content={initialData} />
+                        <Visits {...initialData} />
+                    </Layout>
+                ));
             });
         })
         .catch(err => {
