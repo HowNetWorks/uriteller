@@ -11,7 +11,7 @@ import fs from "fs";
 import url from "url";
 import path from "path";
 import React from "react";
-import moment from "moment";
+
 import express from "express";
 import emojiFlags from "emoji-flags";
 
@@ -87,10 +87,6 @@ function extractInfo(req) {
     });
 }
 
-function formatTimestamp(ts) {
-    return moment(ts).format();
-}
-
 const app = express();
 
 app.set("json spaces", 2);
@@ -137,7 +133,7 @@ app.get("/:id.json", (req, res) => {
                     visits: visits.map(entity => {
                         return mergeAndClean(entity.info, {
                             country: getCountry(entity.info.country),
-                            timestamp: formatTimestamp(entity.timestamp)
+                            timestamp: entity.timestamp
                         });
                     })
                 });
@@ -176,7 +172,7 @@ app.get("/:id", (req, res) => {
                     updateCursor: cursor,
                     visits: visits.map(entity => {
                         return mergeAndClean(entity.info, {
-                            timestamp: formatTimestamp(entity.timestamp),
+                            timestamp: entity.timestamp,
                             country: getCountry(entity.info.country)
                         });
                     })

@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { formatAbsolute, formatRelative } from "../timestamp";
 
 function copy(text) {
     const div = document.createElement("div");
@@ -68,6 +69,55 @@ Cell.propTypes = {
     children: React.PropTypes.node
 };
 
+
+class Timestamp extends React.Component {
+    constructor() {
+        super();
+        this._interval = null;
+    }
+
+    _check(update) {
+        if (update && this._interval === null) {
+            this._interval = setInterval(this._update.bind(this), 5000);
+        } else if (!update && this._interval !== null) {
+            clearInterval(this._interval);
+            this._interval = null;
+        }
+    }
+
+    _update() {
+        this.setState({
+            absolute: formatAbsolute(this.props.timestamp),
+            relative: formatRelative(this.props.timestamp)
+        });
+    }
+
+    componentWillMount() {
+        this._update();
+    }
+
+    componentDidMount() {
+        this._check(this.props.update);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this._check(nextProps.update);
+    }
+
+    componentWillUnmount() {
+        this._check(false);
+    }
+
+    render() {
+        return (
+            <span>
+                <span className="absolute">{this.state.absolute}</span>
+                <span className="relative">{this.state.relative}</span>
+            </span>
+        );
+    }
+}
+
 export default function Visits(props) {
     return (
         <div className="container">
@@ -103,8 +153,12 @@ export default function Visits(props) {
                         <tbody>
                             {props.visits.map((visit, index) => (
                                 <tr key={index}>
-                                    <Cell className="timestamp" header="Time">{visit.timestamp}</Cell>
-                                    <Cell header="IP">{visit.country.emoji}&nbsp;{visit.ip}</Cell>
+                                    <Cell className="timestamp" header="Time">
+                                        <Timestamp timestamp={visit.timestamp} update={props.js} />
+                                    </Cell>
+                                    <Cell className="ip" header="IP">
+                                        {visit.country.emoji}&nbsp;{visit.ip}
+                                    </Cell>
                                     <Cell header="ASN">
                                         {visit.asns.map((item, index) => <span key={index}>{item.asn} {item.names}</span>)}
                                     </Cell>

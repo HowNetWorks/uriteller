@@ -11,6 +11,11 @@
   display: none;
 }
 
+.visits .timestamp .absolute {
+  display: block;
+  white-space: nowrap;
+}
+
 @media (max-width: 991px) {
   .visits thead {
     display: none;
@@ -37,7 +42,6 @@
     text-transform: uppercase;
     display: block;
     font-size: 0.9em;
-    color: #555;
     font-weight: bold;
   }
 
@@ -49,11 +53,15 @@
     float: right;
     font-size: 0.8em;
     color: #555;
-    border-radius: 0.2em;
+    text-align: right;
   }
 
-  .visits .timestamp + td {
-    clear: left;
+  .visits .ip {
+    float: left;
+  }
+
+  .visits .ip ~ td {
+    clear: both;
   }
 
   .visits .no-content {
