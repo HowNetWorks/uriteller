@@ -69,7 +69,6 @@ Cell.propTypes = {
     children: React.PropTypes.node
 };
 
-
 class Timestamp extends React.Component {
     constructor() {
         super();
@@ -102,6 +101,7 @@ class Timestamp extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this._check(nextProps.update);
+        this._update();
     }
 
     componentWillUnmount() {
@@ -117,6 +117,11 @@ class Timestamp extends React.Component {
         );
     }
 }
+
+Timestamp.propTypes = {
+    update: React.PropTypes.bool.isRequired,
+    timestamp: React.PropTypes.number.isRequired
+};
 
 export default function Visits(props) {
     return (
