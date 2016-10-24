@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 
 function copy(text) {
     const div = document.createElement("div");
@@ -39,6 +40,33 @@ CopyButton.propTypes = {
     text: React.PropTypes.string.isRequired
 };
 
+function noContent(children) {
+    if (!children) {
+        return true;
+    }
+    if (Array.isArray(children)) {
+        return children.length === 0;
+    }
+    return false;
+}
+
+function Cell({ header, className, ...props }) {
+    const newClassName = classNames(className, { "no-content": noContent(props.children) });
+
+    return (
+        <td className={newClassName}>
+            <span className="cell-header">{header}</span>
+            <span className="cell-content" {...props} />
+        </td>
+    );
+}
+
+Cell.propTypes = {
+    header: React.PropTypes.string.isRequired,
+    className: React.PropTypes.string,
+    children: React.PropTypes.node
+};
+
 export default function Visits(props) {
     return (
         <div className="container">
@@ -62,7 +90,7 @@ export default function Visits(props) {
                 <div className="col-sm-12">
                     <h3>Visits <span className="badge">{props.visits.length}</span></h3>
 
-                    <table className="table table-striped">
+                    <table className="table table-striped visits">
                         <thead>
                             <tr>
                                 <th>Time</th>
@@ -74,10 +102,12 @@ export default function Visits(props) {
                         <tbody>
                             {props.visits.map((visit, index) => (
                                 <tr key={index}>
-                                    <td>{visit.timestamp}</td>
-                                    <td>{visit.country.emoji}&nbsp;{visit.ip}</td>
-                                    <td>{visit.asns.map((item, index) => <span key={index}>{item.asn} {item.names}</span>)}</td>
-                                    <td>{visit.userAgent}</td>
+                                    <Cell className="timestamp" header="Time">{visit.timestamp}</Cell>
+                                    <Cell header="IP">{visit.country.emoji}&nbsp;{visit.ip}</Cell>
+                                    <Cell header="ASN">
+                                        {visit.asns.map((item, index) => <span key={index}>{item.asn} {item.names}</span>)}
+                                    </Cell>
+                                    <Cell header="User Agent">{visit.userAgent}</Cell>
                                 </tr>
                             ))}
                         </tbody>
