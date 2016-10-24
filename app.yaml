@@ -2,4 +2,4 @@ runtime: nodejs
 vm: true
 
 env_variables:
-  BASE_URL: https://urlgeller-test.appspot.com
+  BASE_URL: https://uri-teller.appspot.com
