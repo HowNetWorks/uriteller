@@ -11,6 +11,10 @@
   display: none;
 }
 
+.visits .country-flag {
+  padding-right: 0.33em;
+}
+
 .visits .timestamp .absolute {
   display: block;
   white-space: nowrap;
@@ -24,7 +28,7 @@
   .visits tbody tr {
     display: block;
     border-top: 1px solid #ddd;
-    padding: 0.5em;
+    padding: 0.25em;
     padding-top: 10px;
     padding-bottom: 14px;
     clear: both;

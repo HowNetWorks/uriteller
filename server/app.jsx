@@ -11,9 +11,7 @@ import fs from "fs";
 import url from "url";
 import path from "path";
 import React from "react";
-
 import express from "express";
-import emojiFlags from "emoji-flags";
 
 import taskQueue from "./lib/taskqueue";
 import store from "./lib/store";
@@ -41,20 +39,6 @@ function asset(name, kind) {
 function fullUrl(req, path) {
     let baseUrl = process.env.BASE_URL;
     return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
-}
-
-function getCountry(code) {
-    const info = code ? emojiFlags.countryCode(code) : undefined;
-    if (!info) {
-        return {
-            code: code
-        };
-    }
-    return {
-        code: code,
-        name: info.name,
-        emoji: info.emoji
-    };
 }
 
 function mergeAndClean(...objs) {
@@ -132,7 +116,6 @@ app.get("/:id.json", (req, res) => {
                     trapUrl: fullUrl(req, item.other),
                     visits: visits.map(entity => {
                         return mergeAndClean(entity.info, {
-                            country: getCountry(entity.info.country),
                             timestamp: entity.timestamp
                         });
                     })
@@ -172,8 +155,7 @@ app.get("/:id", (req, res) => {
                     updateCursor: cursor,
                     visits: visits.map(entity => {
                         return mergeAndClean(entity.info, {
-                            timestamp: entity.timestamp,
-                            country: getCountry(entity.info.country)
+                            timestamp: entity.timestamp
                         });
                     })
                 };

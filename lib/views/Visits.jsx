@@ -1,6 +1,22 @@
 import React from "react";
+import emojiFlags from "emoji-flags";
 import classNames from "classnames";
 import { formatAbsolute, formatRelative } from "../timestamp";
+
+function CountryFlag(_props) {
+    const { country, ...props } = _props;
+    if (!country) {
+        return null;
+    }
+
+    const info = emojiFlags.countryCode(country);
+    if (!info) {
+        return null;
+    }
+
+    const className = classNames(props.className, "country-flag");
+    return <span className={className} {...props}>{info.emoji}</span>;
+}
 
 function copy(text) {
     const div = document.createElement("div");
@@ -162,10 +178,12 @@ export default function Visits(props) {
                                         <Timestamp timestamp={visit.timestamp} update={props.js} />
                                     </Cell>
                                     <Cell className="ip" header="IP">
-                                        {visit.country.emoji}&nbsp;{visit.ip}
+                                        <CountryFlag country={visit.country} />{visit.ip}
                                     </Cell>
                                     <Cell header="ASN">
-                                        {visit.asns.map((item, index) => <span key={index}>{item.asn} {item.names}</span>)}
+                                        {visit.asns.map((item, index) => (
+                                            <span key={index}>{item.asn} {item.names}</span>
+                                        ))}
                                     </Cell>
                                     <Cell header="User Agent">{visit.userAgent}</Cell>
                                 </tr>
