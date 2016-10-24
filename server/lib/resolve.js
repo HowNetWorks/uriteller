@@ -36,7 +36,12 @@ exports.ipToASNs = function(ip) {
 
 function lookup(name) {
     return lookupASNs(name).then(asns => {
-        return Promise.all(asns.map(lookupASInfo));
+        const promises = asns.map(info => {
+            return lookupASNames(info.asn).then(names => {
+                return { ...info, names: names };
+            });
+        });
+        return Promise.all(promises);
     });
 }
 
@@ -47,14 +52,23 @@ function lookupASNs(name) {
                 return OK_DNS_ERRORS.has(err.code) ? resolve([]) : reject(err);
             }
 
-            const asns = new Set();
+            const asns = new Map();
             records.forEach(record => {
-                const asn = record.join("").split("|")[0].trim();
-                if (asn) {
-                    asns.add(asn);
+                const fields = record.join("").split("|").map(x => x.trim());
+
+                const asn = fields[0];
+                if (!asn) {
+                    return;
                 }
+                const info = { asn: asn };
+
+                const country = fields[2];
+                if (country) {
+                    info.country = country;
+                }
+                asns.set(asn, info);
             });
-            return resolve(Array.from(asns));
+            return resolve(Array.from(asns.values()));
         });
     });
 }
@@ -65,7 +79,7 @@ function cleanASName(name) {
     return name.replace(/,\s*[A-Z]{2}\s*$/, "").trim();
 }
 
-function lookupASInfo(asn) {
+function lookupASNames(asn) {
     return new Promise((resolve, reject) => {
         dns.resolveTxt("AS" + asn + ".asn.cymru.com", (err, records) => {
             if (err) {
@@ -83,10 +97,7 @@ function lookupASInfo(asn) {
                     names.add(name);
                 }
             });
-            return resolve({
-                asn: asn,
-                names: Array.from(names)
-            });
+            return resolve(Array.from(names));
         });
     });
 }
