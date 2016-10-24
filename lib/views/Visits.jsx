@@ -50,7 +50,8 @@ function noContent(children) {
     return false;
 }
 
-function Cell({ header, className, ...props }) {
+function Cell(_props) {
+    const { header, className, ...props } = _props;
     const newClassName = classNames(className, { "no-content": noContent(props.children) });
 
     return (
