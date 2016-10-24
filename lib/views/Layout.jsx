@@ -26,6 +26,9 @@ export default function Layout(props) {
                 <footer className="footer text-muted">
                     <div className="container">
                         <hr />
+                        <p className="pull-left logo">
+                            HowNetWorks
+                        </p>
                         <p className="pull-right">
                             Made with <span className="glyphicon glyphicon-scissors"></span> in Finland
                         </p>

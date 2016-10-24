@@ -18,3 +18,16 @@ body {
   height: 80px;
   width: 100%;
 }
+
+.footer .logo:before {
+  display: inline-block;
+
+  background-image: url(hnwlogo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left;
+  vertical-align: text-top;
+  content: " ";
+  height: 1em;
+  width: 2em;
+}
