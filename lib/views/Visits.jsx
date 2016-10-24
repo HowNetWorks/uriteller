@@ -1,5 +1,44 @@
 import React from "react";
 
+function copy(text) {
+    const div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+
+    const selection = window.getSelection();
+    const oldRanges = [];
+    for (var i = 0, len = selection.rangeCount; i < len; i++) {
+        oldRanges.push(selection.getRangeAt(i));
+    }
+
+    document.body.appendChild(div);
+    try {
+        const range = document.createRange();
+        range.selectNode(div);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        document.execCommand("copy");
+    } finally {
+        document.body.removeChild(div);
+
+        selection.removeAllRanges();
+        oldRanges.forEach(oldRange => {
+            selection.addRange(oldRange);
+        });
+    }
+}
+
+function CopyButton(_props) {
+    const { text, ...props } = _props;
+    return <button onClick={() => copy(text)} {...props} />;
+}
+
+CopyButton.propTypes = {
+    text: React.PropTypes.string.isRequired
+};
+
 export default function Visits(props) {
     return (
         <div className="container">
@@ -7,7 +46,15 @@ export default function Visits(props) {
                 <div className="col-sm-12">
                     <h4>Tracking visits to</h4>
 
-                    <input type="text" className="form-control" value={props.trapUrl} readOnly />
+                    <div className="input-group">
+                        <input id="trap-url" className="form-control trap-url" value={props.trapUrl} readOnly />
+
+                        <span className="input-group-btn">
+                            <CopyButton className="btn btn-primary btn-copy" text={props.trapUrl} disabled={!props.js} >
+                                <span className="glyphicon glyphicon-copy" />&nbsp;copy
+                            </CopyButton>
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -43,5 +90,6 @@ export default function Visits(props) {
 
 Visits.propTypes = {
     trapUrl: React.PropTypes.string.isRequired,
-    visits: React.PropTypes.array.isRequired
+    visits: React.PropTypes.array.isRequired,
+    js: React.PropTypes.bool.isRequired
 };

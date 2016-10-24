@@ -102,4 +102,4 @@ function updateTable(_props, rootElement, minInterval=1000, maxInterval=15000) {
 
 const initialData = JSON.parse(document.getElementById("initial-data").textContent);
 const rootElement = document.getElementById("app");
-updateTable(initialData, rootElement);
+updateTable({ ...initialData, js: true }, rootElement);
