@@ -170,6 +170,7 @@ app.get("/:id", (req, res) => {
 
             return store.list(item.other).then(({ cursor, visits }) => {
                 const initialData = {
+                    js: false,
                     trapUrl: fullUrl(req, item.other),
                     updateUrl: fullUrl(req, id + ".json"),
                     updateCursor: cursor,

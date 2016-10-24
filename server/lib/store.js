@@ -1,5 +1,7 @@
 const crypto = require("crypto");
-const gcloud = require("google-cloud")();
+const gcloud = require("google-cloud")({
+    projectId: process.env.GCLOUD_PROJECT || process.env.GAE_LONG_APP_ID
+});
 
 const datastore = gcloud.datastore();
 
