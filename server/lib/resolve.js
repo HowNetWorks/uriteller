@@ -59,6 +59,12 @@ function lookupASNs(name) {
     });
 }
 
+function cleanASName(name) {
+    // Remove a trailing two-character country code, if it exists. Also trim
+    // away surrounding whitespace.
+    return name.replace(/,\s*[A-Z]{2}\s*$/, "").trim();
+}
+
 function lookupASInfo(asn) {
     return new Promise((resolve, reject) => {
         dns.resolveTxt("AS" + asn + ".asn.cymru.com", (err, records) => {
@@ -72,7 +78,7 @@ function lookupASInfo(asn) {
                 if (pieces.length < 5) {
                     return;
                 }
-                const name = pieces[4].trim();
+                const name = cleanASName(pieces[4]);
                 if (name) {
                     names.add(name);
                 }
