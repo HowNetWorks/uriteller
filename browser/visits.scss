@@ -1,10 +1,24 @@
-.trap-url {
-  -webkit-user-select: all;
-  -moz-user-select: all;
-  -ms-user-select: all;
-  user-select: all;
+.trap-group {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 
-  cursor: pointer;
+  .trap-url {
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
+
+    cursor: pointer;
+  }
+}
+
+.help {
+  font-size: 12px;
+  vertical-align: bottom;
+}
+
+.table thead th {
+  border: none;
 }
 
 .visits {
