@@ -1,0 +1,48 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+html {
+  position: relative;
+  min-height: 100%;
+  font-size: 15px;
+}
+
+body {
+  padding-top: 50px;
+  margin-bottom: 80px;
+}
+
+section {
+  padding-top: 2em;
+  padding-bottom: 0.5em;
+}
+
+.index-header {
+  .container {
+    padding-top: 2em;
+    padding-bottom: 3em;
+  }
+
+  h1 {
+    font-size: 6em;
+  }
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  height: 80px;
+  width: 100%;
+
+  .logo:before {
+    display: inline-block;
+
+    background-image: url(hnwlogo.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left;
+    vertical-align: text-top;
+    content: " ";
+    height: 1em;
+    width: 2em;
+  }
+}

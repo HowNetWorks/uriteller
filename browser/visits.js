@@ -3,8 +3,8 @@ import React from "react";
 import { render } from "react-dom";
 
 import Visits from "../lib/views/Visits.jsx";
-import "./common.css";
-import "./visits.css";
+import "./common.scss";
+import "./visits.scss";
 
 function byTimestampDescending(left, right) {
     if (left.timestamp === right.timestamp) {

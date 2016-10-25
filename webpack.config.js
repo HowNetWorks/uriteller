@@ -27,13 +27,16 @@ const config = {
                 }
             },
             {
-                test: /\.css$/,
+                test: /\.s?css$/,
                 loader: ExtractTextPlugin.extract([
                     {
                         loader: "css",
                         query: {
                             minimize: production
                         }
+                    },
+                    {
+                        loader: "sass"
                     }
                 ])
             },
@@ -63,7 +66,7 @@ const config = {
             prettyPrint: true
         })
     ],
-    devtool: "source-map"
+    devtool: "eval-source-map"
 };
 
 if (production) {
@@ -75,6 +78,7 @@ if (production) {
             mangle: true
         })
     );
+    config.devtool = "source-map";
 }
 
 module.exports = config;

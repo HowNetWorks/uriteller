@@ -162,7 +162,7 @@ Timestamp.propTypes = {
 export default function Visits(props) {
     return (
         <div className="container">
-            <div className="row">
+            <section className="row">
                 <div className="col-sm-12">
                     <h4>Tracking visits to</h4>
 
@@ -170,17 +170,17 @@ export default function Visits(props) {
                         <input id="trap-url" className="form-control trap-url" value={props.trapUrl} readOnly />
 
                         <span className="input-group-btn">
-                            <CopyButton className="btn btn-primary btn-copy" text={props.trapUrl} disabled={!props.js} >
-                                <span className="glyphicon glyphicon-copy" />&nbsp;copy
+                            <CopyButton className="btn btn-primary btn-copy" text={props.trapUrl} disabled={!props.js}>
+                                copy
                             </CopyButton>
                         </span>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div className="row">
+            <section className="row">
                 <div className="col-sm-12">
-                    <h3>Visits <span className="badge">{props.visits.length}</span></h3>
+                    <h4>Visits</h4>
 
                     <table className="table table-striped visits">
                         <thead>
@@ -211,7 +211,7 @@ export default function Visits(props) {
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
         </div>
     );
 }

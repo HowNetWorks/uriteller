@@ -11,11 +11,9 @@ export default function Layout(props) {
             </head>
 
             <body>
-                <nav className="navbar navbar-default navbar-fixed-top">
+                <nav className="navbar navbar-fixed-top navbar-light bg-faded">
                     <div className="container">
-                        <div className="navbar-header">
-                            <a className="navbar-brand" href="/">URI:teller</a>
-                        </div>
+                        <a className="navbar-brand" href="/">URI:teller</a>
                     </div>
                 </nav>
 
@@ -26,12 +24,12 @@ export default function Layout(props) {
                 <footer className="footer text-muted">
                     <div className="container">
                         <hr />
-                        <p className="pull-left logo">
+                        <div className="float-xs-left logo">
                             HowNetWorks
-                        </p>
-                        <p className="pull-right">
-                            Made with <span className="glyphicon glyphicon-scissors"></span> in Finland
-                        </p>
+                        </div>
+                        <div className="float-xs-right">
+                            Made with &#9986; in Finland
+                        </div>
                     </div>
                 </footer>
 
