@@ -18,6 +18,7 @@ import store from "./lib/store";
 import render from "./lib/render";
 
 import Layout from "../lib/views/Layout";
+import Trap from "../lib/views/Trap";
 import Index from "../lib/views/Index";
 import Visits from "../lib/views/Visits";
 import EmbeddedJSON from "../lib/views/EmbeddedJSON";
@@ -143,7 +144,13 @@ app.get("/:id", (req, res) => {
                     timestamp: Date.now(),
                     info: extractInfo(req)
                 }).then(() => {
-                    res.send("This visit has been logged.");
+                    const styles = [asset("common", "css")];
+                    const scripts = [asset("common", "js")];
+                    res.send(render(
+                        <Layout styles={styles} scripts={scripts}>
+                            <Trap />
+                        </Layout>
+                    ));
                 });
             }
 
