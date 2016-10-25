@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  padding-top: 50px;
+  padding-top: 70px;
   margin-bottom: 80px;
 }
 
@@ -16,10 +16,12 @@ section {
   padding-bottom: 0.5em;
 }
 
-.index-header {
-  .container {
-    padding-top: 2em;
-    padding-bottom: 3em;
+.index {
+  padding-top: 2em;
+  padding-bottom: 3em;
+
+  strong {
+    color: red;
   }
 
   h1 {
