@@ -1,4 +1,4 @@
-import { errors } "./lib/gcloud";
+import { errors } from "./lib/gcloud";
 
 import express from "express";
 import * as store from "./lib/store";
