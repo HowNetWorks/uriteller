@@ -1,16 +1,9 @@
-if (!process.env.GCLOUD_PROJECT) {
-    process.env.GCLOUD_PROJECT = process.env.GAE_LONG_APP_ID;
-}
+import "./lib/gcloud";
 
-if (process.env.NODE_ENV === "production") {
-    require("@google/cloud-debug");
-    require("@google/cloud-trace").start();
-}
-
-const express = require("express");
-const store = require("./lib/store");
-const taskQueue = require("./lib/taskqueue");
-const resolve = require("./lib/resolve");
+import express from "express";
+import * as store from "./lib/store";
+import * as taskQueue from "./lib/taskqueue";
+import * as resolve from "./lib/resolve";
 
 const app = express();
 

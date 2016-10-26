@@ -1,6 +1,4 @@
-const gcloud = require("google-cloud")({
-    projectId: process.env.GCLOUD_PROJECT || process.env.GAE_LONG_APP_ID
-});
+import gcloud from "./gcloud";
 
 const pubsub = gcloud.pubsub();
 
@@ -40,7 +38,7 @@ function _publish(topicObj, data) {
     });
 }
 
-exports.subscribe = function(topicName, subName, handler) {
+export function subscribe(topicName, subName, handler) {
     return _topic(topicName)
         .then(topic => _subscribe(topic, subName))
         .then(
@@ -60,8 +58,8 @@ exports.subscribe = function(topicName, subName, handler) {
                 handler(err, null);
             }
         );
-};
+}
 
-exports.publish = function(topicName, data) {
+export function publish(topicName, data) {
     return _topic(topicName).then(topic => _publish(topic, data));
-};
+}

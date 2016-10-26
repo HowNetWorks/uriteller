@@ -1,11 +1,4 @@
-if (!process.env.GCLOUD_PROJECT) {
-    process.env.GCLOUD_PROJECT = process.env.GAE_LONG_APP_ID;
-}
-
-if (process.env.NODE_ENV === "production") {
-    require("@google/cloud-debug");
-    require("@google/cloud-trace").start();
-}
+import "./lib/gcloud";
 
 import fs from "fs";
 import url from "url";
@@ -13,8 +6,8 @@ import path from "path";
 import React from "react";
 import express from "express";
 
-import taskQueue from "./lib/taskqueue";
-import store from "./lib/store";
+import * as taskQueue from "./lib/taskqueue";
+import * as store from "./lib/store";
 import render from "./lib/render";
 
 import Layout from "../lib/views/Layout";
@@ -84,18 +77,15 @@ app.get("/", (req, res) => {
     res.send(render(<Layout styles={styles} scripts={scripts}><Index /></Layout>));
 });
 
-app.get("/new", (req, res) => {
+app.get("/new", (req, res, next) => {
     store.create()
         .then(view => {
             res.redirect("/" + view);
         })
-        .catch(err => {
-            console.error(err);
-            res.sendStatus(500);
-        });
+        .catch(next);
 });
 
-app.get("/:id.json", (req, res) => {
+app.get("/:id.json", (req, res, next) => {
     const id = req.params.id;
 
     let cursor = req.query.cursor;
@@ -123,13 +113,10 @@ app.get("/:id.json", (req, res) => {
                 });
             });
         })
-        .catch(err => {
-            console.error(err);
-            res.sendStatus(500);
-        });
+        .catch(next);
 });
 
-app.get("/:id", (req, res) => {
+app.get("/:id", (req, res, next) => {
     const id = req.params.id;
 
     store.get(id)
@@ -177,10 +164,7 @@ app.get("/:id", (req, res) => {
                 ));
             });
         })
-        .catch(err => {
-            console.error(err);
-            res.sendStatus(500);
-        });
+        .catch(next);
 });
 
 const server = app.listen(process.env.PORT || 8080, () => {

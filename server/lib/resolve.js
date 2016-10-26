@@ -1,10 +1,10 @@
-const net = require("net");
-const dns = require("dns");
-const ipAddress = require("ip-address");
+import net from "net";
+import dns from "dns";
+import ipAddress from "ip-address";
 
 const OK_DNS_ERRORS = new Set([dns.NODATA, dns.NOTFOUND]);
 
-exports.reverse = function(ip) {
+export function reverse(ip) {
     if (!net.isIP(ip)) {
         return Promise.resolve([]);
     }
@@ -17,9 +17,9 @@ exports.reverse = function(ip) {
             return resolve(hostnames);
         });
     });
-};
+}
 
-exports.ipToASNs = function(ip) {
+export function ipToASNs(ip) {
     if (net.isIP(ip)) {
         const ipv4 = new ipAddress.Address4(ip);
         if (ipv4.isValid()) {
@@ -32,7 +32,7 @@ exports.ipToASNs = function(ip) {
         }
     }
     return Promise.resolve([]);
-};
+}
 
 function lookup(name) {
     return lookupASNs(name).then(asns => {

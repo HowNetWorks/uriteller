@@ -1,7 +1,5 @@
-const crypto = require("crypto");
-const gcloud = require("google-cloud")({
-    projectId: process.env.GCLOUD_PROJECT || process.env.GAE_LONG_APP_ID
-});
+import crypto from "crypto";
+import gcloud from "./gcloud";
 
 const datastore = gcloud.datastore();
 
@@ -60,7 +58,7 @@ function seqIdKey(target, seqId) {
     return datastore.key(["Visit", seqId + "/" + target]);
 }
 
-exports.create = function() {
+export function create() {
     function tryCreate(resolve, reject) {
         const trap = genId();
         const view = genId();
@@ -105,9 +103,9 @@ exports.create = function() {
     return new Promise((resolve, reject) => {
         tryCreate(resolve, reject);
     });
-};
+}
 
-exports.get = function(id) {
+export function get(id) {
     return new Promise((resolve, reject) => {
         datastore.get(datastore.key(["Item", id]), (err, entry) => {
             if (err) {
@@ -119,7 +117,7 @@ exports.get = function(id) {
             }
         });
     });
-};
+}
 
 function doQuery(query) {
     return new Promise((resolve, reject) => {
@@ -136,7 +134,7 @@ function doQuery(query) {
 const visits = new Map();
 const VISIT_CHUNK_COUNT = 10;
 
-exports.visit = function(target, timestamp, info) {
+export function visit(target, timestamp, info) {
     function insert(seqId) {
         const queue = visits.get(target);
         if (!queue) {
@@ -187,7 +185,7 @@ exports.visit = function(target, timestamp, info) {
             getSeqId(target).then(insert);
         }
     });
-};
+}
 
 function getSeqIds(target, seqIds) {
     if (seqIds.length === 0) {
@@ -205,7 +203,7 @@ function getSeqIds(target, seqIds) {
     });
 }
 
-exports.list = function(target, cursor=0) {
+export function list(target, cursor=0) {
     let query = datastore.createQuery("Visit")
         .filter("target", target)
         .filter("seqId", ">=", cursor)
@@ -252,4 +250,4 @@ exports.list = function(target, cursor=0) {
                 visits: visits
             };
         });
-};
+}
