@@ -1,4 +1,4 @@
-import "./lib/gcloud";
+import { errors } "./lib/gcloud";
 
 import express from "express";
 import * as store from "./lib/store";
@@ -18,7 +18,7 @@ const server = app.listen(process.env.PORT || 8081, () => {
 
 taskQueue.subscribe("main-topic", "main-subscription", (err, msg) => {
     if (err) {
-        return console.error(err);
+        return errors.report(err);
     }
 
     const data = msg.data;
@@ -30,5 +30,5 @@ taskQueue.subscribe("main-topic", "main-subscription", (err, msg) => {
             return store.visit(data.target, data.timestamp, data.info);
         })
         .then(() => msg.ack())
-        .catch(err => console.error(err));
+        .catch(err => errors.report(err));
 });

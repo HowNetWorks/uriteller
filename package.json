@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@google/cloud-debug": "^0.8.5",
+    "@google/cloud-errors": "^0.1.0",
     "@google/cloud-trace": "^0.5.8",
     "babel-cli": "^6.16.0",
     "babel-plugin-transform-es2015-destructuring": "^6.16.0",

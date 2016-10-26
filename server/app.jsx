@@ -1,4 +1,4 @@
-import "./lib/gcloud";
+import { errors } from "./lib/gcloud";
 
 import fs from "fs";
 import url from "url";
@@ -166,6 +166,8 @@ app.get("/:id", (req, res, next) => {
         })
         .catch(next);
 });
+
+app.use(errors.express);
 
 const server = app.listen(process.env.PORT || 8080, () => {
     const addr = server.address();
