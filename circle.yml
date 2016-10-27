@@ -13,3 +13,13 @@ dependencies:
 test:
   override:
     - NODE_END=production yarn build
+
+deployment:
+  production:
+    branch: production
+    commands:
+      - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+      - gcloud config set project ${GCLOUD_PROJECT}
+      - echo ${GCLOUD_SERVICE_KEY} | base64 --decode > ${HOME}/gcloud-service-key.json
+      - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+      - gcloud app deploy --quiet --no-promote --version=production app.yaml worker.yaml index.yaml
