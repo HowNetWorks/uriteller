@@ -2,4 +2,9 @@ runtime: nodejs
 vm: true
 
 env_variables:
-  BASE_URL: https://uri-teller.appspot.com
+  BASE_URL: https://uriteller.io
+
+handlers:
+- url: /.*
+  script: IGNORED
+  secure: always
