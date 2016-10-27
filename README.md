@@ -1,5 +1,18 @@
-# URI:teller
+<img src="browser/utlogo.png" alt="URI:teller" width="80%" />
 
+URI:teller is a service for monitoring how chat apps, social network sites and such fetch their link previews. Well, that's *one* of the uses.
+
+The code in this repository is built for the Google Cloud Platform. See [Prerequisites](#prerequisites) for more info about that.
+
+## Technical Name-dropping
+
+URI:teller uses Google's [Cloud Datastore](https://cloud.google.com/datastore/) as the database and [Cloud Pub/Sub](https://cloud.google.com/pubsub/) for passing work between services. Stackdriver [Debugger](https://cloud.google.com/debugger/), [Trace](https://cloud.google.com/trace/) and [Error Reporting](https://cloud.google.com/error-reporting/) work if their respective APIs are enabled.
+
+The code is written in ES2015 plus some extensions, such as modules and JSX (suffixed with `.jsx` instead of `.js`). [Babel](https://babeljs.io/) then compiles the source to JavaScript that [Node.js](https://nodejs.org/en/) and browsers can handle. For styling: [SASS](http://sass-lang.com/).
+
+[React](https://facebook.github.io/react/) allows reusing the same view code for both server-side and in-browser rendering. 
+
+On the browser [Bootstrap 4](https://v4-alpha.getbootstrap.com/) makes things look nice. [Webpack 2](https://webpack.github.io/) crumples the code, styles and other assets into an easily distributable bundle.
 
 ## Prerequisites
 
