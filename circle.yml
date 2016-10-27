@@ -12,7 +12,7 @@ dependencies:
 
 test:
   override:
-    - NODE_END=production yarn build
+    - NODE_ENV=production yarn build
 
 deployment:
   production:
