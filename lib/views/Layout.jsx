@@ -1,13 +1,15 @@
 import React from "react";
 
-export default function Layout(props) {
+export default function Layout(_props) {
+    const { styles, scripts, children, ...props } = _props;
+
     return (
-        <html>
+        <html {...props}>
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <title>URI:teller</title>
 
-                {props.styles.map((href, index) => <link key={index} rel="stylesheet" href={href} />)}
+                {styles.map((href, index) => <link key={index} rel="stylesheet" href={href} />)}
             </head>
 
             <body>
@@ -18,7 +20,7 @@ export default function Layout(props) {
                 </nav>
 
                 <div id="app">
-                    {props.children}
+                    {children}
                 </div>
 
                 <footer className="footer text-muted">
@@ -33,7 +35,7 @@ export default function Layout(props) {
                     </div>
                 </footer>
 
-                {props.scripts.map((src, index) => <script key={index} src={src}></script>)}
+                {scripts.map((src, index) => <script key={index} src={src}></script>)}
             </body>
         </html>
     );

@@ -74,7 +74,11 @@ app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { max
 app.get("/", (req, res) => {
     const styles = [asset("common", "css")];
     const scripts = [asset("common", "js")];
-    res.send(render(<Layout styles={styles} scripts={scripts}><Index /></Layout>));
+    res.send(render(
+        <Layout className="page-index" styles={styles} scripts={scripts}>
+            <Index />
+        </Layout>
+    ));
 });
 
 app.get("/new", (req, res, next) => {
@@ -134,7 +138,7 @@ app.get("/:id", (req, res, next) => {
                     const styles = [asset("common", "css")];
                     const scripts = [asset("common", "js")];
                     res.send(render(
-                        <Layout styles={styles} scripts={scripts}>
+                        <Layout className="page-trap" styles={styles} scripts={scripts}>
                             <Trap />
                         </Layout>
                     ));
@@ -157,7 +161,7 @@ app.get("/:id", (req, res, next) => {
                 const styles = [asset("common", "css"), asset("visits", "css")];
                 const scripts = [asset("common", "js"), asset("visits", "js")];
                 res.send(render(
-                    <Layout styles={styles} scripts={scripts}>
+                    <Layout className="page-monitor" styles={styles} scripts={scripts}>
                         <EmbeddedJSON id="initial-data" content={initialData} />
                         <Visits {...initialData} />
                     </Layout>
