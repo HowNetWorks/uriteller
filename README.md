@@ -1,5 +1,7 @@
 <img src="browser/utlogo.png" alt="URI:teller" width="80%" />
 
+[![CircleCI](https://circleci.com/gh/HowNetWorks/uriteller.svg?style=shield)](https://circleci.com/gh/HowNetWorks/uriteller)
+
 URI:teller is a service for monitoring how chat apps, social network sites and such fetch their link previews. Well, that's *one* of the uses.
 
 The code in this repository is built for the Google Cloud Platform. See [Prerequisites](#prerequisites) for more info about that.
