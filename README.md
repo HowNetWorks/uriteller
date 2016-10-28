@@ -16,6 +16,8 @@ The code is written in ES2015 plus some extensions, such as modules and JSX (suf
 
 On the browser [Bootstrap 4](https://v4-alpha.getbootstrap.com/) makes things look nice. [Webpack 2](https://webpack.github.io/) crumples the code, styles and other assets into an easily distributable bundle.
 
+[CircleCI](https://circleci.com/) runs the build process on every repository push. CircleCI also deploys the site whenever the `production` branch gets an update.
+
 ## Prerequisites
 
 ### Google Cloud Platform
