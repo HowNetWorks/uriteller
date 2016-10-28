@@ -1,9 +1,6 @@
 runtime: custom
 vm: true
 
-env_variables:
-  BASE_URL: https://uriteller.io
-
 handlers:
 - url: /.*
   script: IGNORED

@@ -12,7 +12,7 @@ URI:teller uses Google's [Cloud Datastore](https://cloud.google.com/datastore/) 
 
 The code is written in ES2015 plus some extensions, such as modules and JSX (suffixed with `.jsx` instead of `.js`). [Babel](https://babeljs.io/) then compiles the source to JavaScript that [Node.js](https://nodejs.org/en/) and browsers can handle. For styling: [SASS](http://sass-lang.com/).
 
-[React](https://facebook.github.io/react/) allows reusing the same view code for both server-side and in-browser rendering. 
+[React](https://facebook.github.io/react/) allows reusing the same view code for both server-side and in-browser rendering.
 
 On the browser [Bootstrap 4](https://v4-alpha.getbootstrap.com/) makes things look nice. [Webpack 2](https://webpack.github.io/) crumples the code, styles and other assets into an easily distributable bundle.
 
@@ -69,7 +69,7 @@ $ gcloud beta auth application-default login
 Run `app.js` in port 8080:
 
 ```sh
-$ GCLOUD_PROJECT=<PROJECT_ID> BASE_URL=http://localhost:8080/ npm start
+$ GCLOUD_PROJECT=<PROJECT_ID> APP_BASE_URL=http://localhost:8080/ npm start
 ```
 
 Run `worker.js` in port 8081:

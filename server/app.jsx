@@ -31,7 +31,7 @@ function asset(name, kind) {
 }
 
 function fullUrl(req, path) {
-    let baseUrl = process.env.BASE_URL;
+    let baseUrl = process.env.APP_BASE_URL;
     return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
 }
 
