@@ -5,6 +5,7 @@ import url from "url";
 import path from "path";
 import React from "react";
 import express from "express";
+import request from "request";
 
 import * as taskQueue from "./lib/taskqueue";
 import * as store from "./lib/store";
@@ -71,7 +72,58 @@ app.set("json spaces", 2);
 
 app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
 
+const analytics = {
+    trackingId: process.env.GA_TRACKING_ID,
+
+    send(req, ...overrides) {
+        if (!this.trackingId) {
+            return Promise.resolve();
+        }
+
+        const info = extractInfo(req);
+        const data = mergeAndClean({
+            v: "1",
+            tid: this.trackingId,
+            cid: "unknown",
+            dp: req.path,
+            dr: info.referrer,
+            uip: info.ip,
+            ua: info.userAgent
+        }, ...overrides);
+
+        return new Promise((resolve, reject) => {
+            request.post("https://www.google-analytics.com/collect", { form: data }, (err, response) => {
+                if (err) {
+                    reject(err);
+                } else if (response.statusCode !== 200) {
+                    reject(new Error(`Analytics request status ${response.statusCode}`));
+                } else {
+                    resolve();
+                }
+            });
+        });
+    },
+
+    pageView(req) {
+        return this.send(req, {
+            t: "pageview",
+        });
+    },
+
+    event(req, category, action, label, value) {
+        return this.send(req, {
+            t: "event",
+            ec: category,
+            ea: action,
+            el: label,
+            ev: value
+        });
+    }
+};
+
 app.get("/", (req, res) => {
+    analytics.pageView(req).catch(errors.report);
+
     const styles = [asset("common", "css")];
     const scripts = [asset("common", "js")];
     res.send(render(
@@ -82,6 +134,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/new", (req, res, next) => {
+    analytics.pageView(req).catch(errors.report);
+
     store.create()
         .then(view => {
             res.redirect("/" + view);
@@ -90,6 +144,8 @@ app.get("/new", (req, res, next) => {
 });
 
 app.get("/:id.json", (req, res, next) => {
+    analytics.event(req, "monitor", "poll").catch(errors.report);
+
     const id = req.params.id;
 
     let cursor = req.query.cursor;
@@ -121,8 +177,9 @@ app.get("/:id.json", (req, res, next) => {
 });
 
 app.get("/:id", (req, res, next) => {
-    const id = req.params.id;
+    analytics.pageView(req).catch(errors.report);
 
+    const id = req.params.id;
     store.get(id)
         .then(item => {
             if (!item) {
@@ -130,6 +187,8 @@ app.get("/:id", (req, res, next) => {
             }
 
             if (!item.isView) {
+                analytics.event(req, "trap", "view").catch(errors.report);
+
                 return taskQueue.publish("main-topic", {
                     target: id,
                     timestamp: Date.now(),
