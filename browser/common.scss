@@ -164,7 +164,49 @@ section {
   }
 }
 
+@font-face {
+  font-family: "social";
+  src: url("font/social.eot");
+  src: url("font/social.eot#iefix") format("embedded-opentype"),
+    url("font/social.woff2") format("woff2"),
+    url("font/social.woff") format("woff"),
+    url("font/social.ttf") format("truetype"),
+    url("font/social.svg#social") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .footer {
+  .icon {
+    display: inline-block;
+
+    font-family: "social";
+    font-size: 2rem;
+    text-decoration: none;
+
+    color: $text-muted;
+    &:hover {
+      color: black;
+    }
+    &:active {
+      color: $text-muted;
+    }
+
+    margin-top: -1rem;
+    padding-left: 1rem;
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &.twitter:before {
+      content: "\f099";
+    }
+
+    &.github:before {
+      content: "\f09b";
+    }
+  }
+
   position: absolute;
   bottom: 0;
   height: 4.5rem;

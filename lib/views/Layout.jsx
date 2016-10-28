@@ -26,11 +26,17 @@ export default function Layout(_props) {
                 <footer className="footer text-muted">
                     <div className="container">
                         <hr />
-                        <div className="float-xs-left logo">
-                            HowNetWorks
-                        </div>
-                        <div className="float-xs-right">
-                            Made with &#9986; in Finland
+                        <div className="row">
+                            <div className="col-xs-4 text-xs-left logo">
+                                HowNetWorks
+                            </div>
+                            <div className="col-xs-4 text-xs-center">
+                                <a className="icon github" href="https://github.com/HowNetWorks/uriteller" target="_blank"/>
+                                <a className="icon twitter" href="https://twitter.com/HowNetWorksIO" target="_blank" />
+                            </div>
+                            <div className="col-xs-4 text-xs-right">
+                                Made with &#9986; in Finland
+                            </div>
                         </div>
                     </div>
                 </footer>
