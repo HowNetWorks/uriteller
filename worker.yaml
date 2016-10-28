@@ -1,5 +1,5 @@
 service: worker
-runtime: nodejs
+runtime: custom
 vm: true
 
 env_variables:
