@@ -80,10 +80,10 @@ export default function Visits(props) {
 
                 <div className="col-xs-12 col-lg-8">
                     <div className="input-group trap-group">
-                        <input id="trap-url" className="form-control trap-url" value={props.trapUrl} readOnly />
+                        <input className="form-control trap-url" value={props.trapUrl} readOnly />
 
                         <span className="input-group-btn">
-                            <CopyButton className="btn btn-primary btn-copy" text={props.trapUrl} disabled={!props.js}>
+                            <CopyButton className="btn btn-primary" text={props.trapUrl} disabled={!props.js}>
                                 copy
                             </CopyButton>
                         </span>
