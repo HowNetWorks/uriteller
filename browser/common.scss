@@ -177,51 +177,68 @@ section {
 }
 
 .footer {
-  .icon {
-    display: inline-block;
-
-    font-family: "social";
-    font-size: 2rem;
-    text-decoration: none;
-
-    color: $text-muted;
-    &:hover {
-      color: black;
-    }
-    &:active {
-      color: $text-muted;
-    }
-
-    margin-top: -1rem;
-    padding-left: 1rem;
-    &:first-child {
-      padding-left: 0;
-    }
-
-    &.twitter:before {
-      content: "\f099";
-    }
-
-    &.github:before {
-      content: "\f09b";
-    }
-  }
-
   position: absolute;
   bottom: 0;
-  height: 4.5rem;
   width: 100%;
 
-  .logo:before {
-    display: inline-block;
+  .container {
+    margin-bottom: 0.5rem;
 
-    background-image: url(hnwlogo.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
-    vertical-align: text-top;
-    content: " ";
-    height: 1em;
-    width: 2em;
+    hr {
+      margin-bottom: 0.5rem;
+    }
+
+    .logo,
+    .blurb {
+      margin-top: 0.5rem;
+    }
+
+    .social {
+      display: inline-block;
+      font-size: 2rem;
+      line-height: 2rem;
+      padding: 0 0.25rem;
+
+      .icon {
+        font-family: "social";
+        width: 1em;
+        height: 1em;
+        text-decoration: none;
+
+        color: $text-muted;
+        &:hover {
+          color: black;
+        }
+        &:active {
+          color: $text-muted;
+        }
+
+        padding-left: 0.75rem;
+        &:first-child {
+          padding-left: 0;
+        }
+
+        &.twitter:before {
+          content: "\f099";
+        }
+
+        &.github:before {
+          content: "\f09b";
+        }
+      }
+    }
+
+    .logo:before {
+      display: inline-block;
+
+      background-image: url(hnwlogo.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: left;
+      vertical-align: text-top;
+      content: " ";
+      height: 1em;
+      width: 2em;
+    }
   }
 }
