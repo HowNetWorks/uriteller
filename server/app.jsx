@@ -88,6 +88,7 @@ const analytics = {
             dp: req.path,
             dr: info.referrer,
             uip: info.ip,
+            aip: "1",
             ua: info.userAgent
         }, ...overrides);
 
