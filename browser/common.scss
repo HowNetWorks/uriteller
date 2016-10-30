@@ -182,7 +182,7 @@ section {
   width: 100%;
 
   .container {
-    margin-bottom: 0.5rem;
+    padding-bottom: 1rem;
 
     hr {
       margin-bottom: 0.5rem;
@@ -197,7 +197,10 @@ section {
       display: inline-block;
       font-size: 2rem;
       line-height: 2rem;
-      padding: 0 0.25rem;
+
+      margin: 0;
+      margin-left: 0.25rem;
+      margin-right: 0.25rem;
 
       .icon {
         font-family: "social";
