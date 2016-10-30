@@ -15,6 +15,7 @@
     "classnames": "^2.2.5",
     "express": "^4.14.0",
     "google-cloud": "^0.41.2",
+    "helmet": "^3.0.0",
     "ip-address": "^5.8.2",
     "moment": "^2.15.1",
     "react": "^15.3.2",

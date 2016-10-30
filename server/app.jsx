@@ -4,6 +4,7 @@ import fs from "fs";
 import url from "url";
 import path from "path";
 import React from "react";
+import helmet from "helmet";
 import express from "express";
 import request from "request";
 
@@ -67,6 +68,7 @@ function extractInfo(req) {
 }
 
 const app = express();
+app.use(helmet());
 
 app.set("json spaces", 2);
 
