@@ -39,7 +39,7 @@ section {
 
   .heading {
     @extend .container;
-    padding: 0 10px;
+    padding: 0 25px;
     text-align: center;
 
     @include media-breakpoint-up(md) {
