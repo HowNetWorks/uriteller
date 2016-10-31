@@ -38,6 +38,7 @@ section {
   }
 
   .heading {
+    @extend .container;
     padding: 0 10px;
     text-align: center;
 
@@ -88,6 +89,7 @@ section {
   }
 
   .comics {
+    @extend .container;
     margin-top: 40px;
 
     @include media-breakpoint-up(md) {
@@ -96,6 +98,10 @@ section {
 
     @include media-breakpoint-up(lg) {
       margin-top: 100px;
+    }
+
+    @include media-breakpoint-up(xl) {
+      width: 100%;
     }
 
     .comic {
@@ -140,8 +146,15 @@ section {
       }
 
       @include media-breakpoint-up(xl) {
-        &.comic-1, &.comic-3 {
-          background-position: center;
+        height: 25vw;
+        min-height: 300px;
+
+        &.comic-1 {
+          background-position: right;
+        }
+
+        &.comic-3 {
+          background-position: left;
         }
       }
 
