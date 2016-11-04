@@ -72,6 +72,8 @@ app.use(helmet());
 
 app.set("json spaces", 2);
 
+app.use("/", express.static(path.join(__dirname, "../static")));
+
 app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
 
 const analytics = {
