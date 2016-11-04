@@ -25,12 +25,21 @@ taskQueue.subscribe("main-topic", "main-subscription", (err, msg) => {
 
     const data = msg.data;
     const ip = data.info.ip;
-    Promise.all([resolve.ipToASNs(ip),  resolve.reverse(ip)])
+
+    Promise.all([resolve.ipToASNs(ip), resolve.reverse(ip)])
         .then(([asns, reverse]) => {
             data.info.reverse = reverse;
             data.info.asns = asns;
             return store.visit(data.target, data.timestamp, data.info);
         })
-        .then(() => msg.ack())
+        .then(() => new Promise((resolve, reject) => {
+            msg.ack(err => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        }))
         .catch(err => errors.report(err));
 });
