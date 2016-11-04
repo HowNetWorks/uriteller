@@ -7,6 +7,7 @@ export default function Layout(_props) {
         <html {...props}>
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="icon" type="image/png" href="/favicon.png" />
                 <title>URI:teller</title>
 
                 {styles.map((href, index) => <link key={index} rel="stylesheet" href={href} />)}
