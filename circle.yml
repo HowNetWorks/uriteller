@@ -31,8 +31,8 @@ deployment:
       - gcloud config set project ${GCLOUD_PROJECT}
       - echo ${GCLOUD_SERVICE_KEY} | base64 --decode > ${HOME}/gcloud-service-key.json
       - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-      - docker tag app gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1}
-      - gcloud docker -- push gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+      - docker tag app gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
+      - gcloud docker -- push gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
       - gcloud app deploy index.yaml --quiet
-      - gcloud app deploy app.yaml --quiet --no-promote --version=${CIRCLE_BRANCH}-${CIRCLE_SHA1} --image-url=gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}
-      - gcloud app deploy worker.yaml --quiet --no-promote --version=${CIRCLE_BRANCH}-${CIRCLE_SHA1} --image-url=gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}
+      - gcloud app deploy app.yaml --quiet --no-promote --version=${CIRCLE_BRANCH}-${CIRCLE_SHA1::16} --image-url=gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
+      - gcloud app deploy worker.yaml --quiet --no-promote --version=${CIRCLE_BRANCH}-${CIRCLE_SHA1::16} --image-url=gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
