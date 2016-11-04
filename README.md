@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/HowNetWorks/uriteller.svg?style=shield)](https://circleci.com/gh/HowNetWorks/uriteller)
 
-URI:teller is a service for monitoring how chat apps, social network sites and such fetch their link previews. Well, that's *one* of the uses.
+URI:teller is a service for monitoring how chat apps, social network sites and such fetch their link previews. See the companion [blog post](https://medium.com/hownetworks/uri-teller-a-call-for-the-curious-20694617db1c) talking about the original motivation and further uses.
 
 The code in this repository is built for the Google Cloud Platform. See [Prerequisites](#prerequisites) for more info about that.
 
