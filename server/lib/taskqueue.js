@@ -16,7 +16,12 @@ function _topic(name) {
 }
 
 function _subscribe(topic, subName) {
-    return topic.subscribe(subName, { reuseExisting: true }).then(data => data[0]);
+    const config = {
+        reuseExisting: true,
+        maxInProgress: 512,
+        ackDeadlineSeconds: 120
+    };
+    return topic.subscribe(subName, config).then(data => data[0]);
 }
 
 export function subscribe(topicName, subName, handler) {

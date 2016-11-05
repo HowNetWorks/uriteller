@@ -18,7 +18,7 @@ const server = app.listen(process.env.PORT || 8081, () => {
     console.log("Listening on port %s...", addr.port);
 });
 
-taskQueue.subscribe("main-topic", "main-subscription", (err, msg) => {
+taskQueue.subscribe("trap-topic", "trap-subscription", (err, msg) => {
     if (err) {
         return errors.report(err);
     }

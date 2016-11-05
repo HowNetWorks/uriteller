@@ -194,7 +194,7 @@ app.get("/:id", (req, res, next) => {
             if (!item.isView) {
                 analytics.event(req, "trap", "view").catch(errors.report);
 
-                return taskQueue.publish("main-topic", {
+                return taskQueue.publish("trap-topic", {
                     target: id,
                     timestamp: Date.now(),
                     info: extractInfo(req)
