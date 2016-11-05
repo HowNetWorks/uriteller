@@ -33,7 +33,7 @@ function asset(name, kind) {
 }
 
 function fullUrl(req, path) {
-    let baseUrl = process.env.APP_BASE_URL;
+    const baseUrl = process.env.APP_BASE_URL;
     return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
 }
 

@@ -10,7 +10,7 @@ function stringify(obj) {
 }
 
 export default function EmbeddedJSON(props) {
-    let { content, ...rest } = props;
+    const { content, ...rest } = props;
     return <script type="application/json" dangerouslySetInnerHTML={stringify(content)} {...rest} />;
 }
 

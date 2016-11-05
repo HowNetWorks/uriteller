@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "babel-node server/${SCRIPT:-app.jsx}",
-    "lint": "eslint --ignore-path .gitignore .",
+    "lint": "eslint --ignore-path=.gitignore --ext=.js,.jsx .",
     "build": "webpack",
     "deploy": "NODE_ENV=production npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
   },
