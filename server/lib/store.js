@@ -44,12 +44,12 @@ function queryMaxSeqId(target) {
 
     return doQuery(query).then(_entities => {
         const entities = _entities.filter(entity => {
-            return entity.data.seqId !== undefined && !isNaN(entity.data.seqId);
+            return entity.seqId !== undefined && !isNaN(entity.seqId);
         });
-        if (entities.length === 0 || entities[0].data.seqId === undefined) {
+        if (entities.length === 0 || entities[0].seqId === undefined) {
             return null;
         }
-        return entities[0].data.seqId;
+        return entities[0].seqId;
     });
 }
 
@@ -113,7 +113,7 @@ export function get(id) {
             } else if (!entry) {
                 resolve(null);
             } else {
-                resolve(entry.data);
+                resolve(entry);
             }
         });
     });
@@ -212,20 +212,20 @@ export function list(target, cursor=0) {
     return doQuery(query)
         .then(entities => {
             return entities.filter(entity => {
-                let seqId = entity.data.seqId;
+                const seqId = entity.seqId;
                 return seqId !== undefined & !isNaN(seqId);
             });
         })
         .then(entities => {
             const nextCursor = entities.reduce((previous, entity) => {
-                let seqId = entity.data.seqId + 1;
+                const seqId = entity.seqId + 1;
                 return seqId > previous ? seqId : previous;
             }, cursor);
 
             const available = new Set(entities.map(entity => entity.seqId));
             const missing = [];
             for (var i = cursor; i < nextCursor; i++) {
-                if (available.has(i)) {
+                if (!available.has(i)) {
                     missing.push(i);
                 }
             }
@@ -240,7 +240,7 @@ export function list(target, cursor=0) {
         .then(({ cursor, entities }) => {
             const visits = [];
             entities.forEach(entity => {
-                entity.data.visits.forEach(visit => {
+                entity.visits.forEach(visit => {
                     visits.push(visit);
                 });
             });

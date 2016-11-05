@@ -3,39 +3,20 @@ import gcloud from "./gcloud";
 const pubsub = gcloud.pubsub();
 
 function _topic(name) {
-    return new Promise((resolve, reject) => {
-        pubsub.createTopic(name, (err, topic) => {
-            if (!err) {
-                return resolve(topic);
+    return pubsub.createTopic(name)
+        .then(
+            data => data[0],
+            err => {
+                if (err.code === 409) {
+                    return pubsub.topic(name);
+                }
+                throw err;
             }
-            if (err.code !== 409) {
-                return reject(err);
-            }
-            return resolve(pubsub.topic(name));
-        });
-    });
+        );
 }
 
-function _subscribe(topicObj, subName) {
-    return new Promise((resolve, reject) => {
-        topicObj.subscribe(subName, { reuseExisting: true }, (err, sub) => {
-            if (err) {
-                return reject(err);
-            }
-            resolve(sub);
-        });
-    });
-}
-
-function _publish(topicObj, data) {
-    return new Promise((resolve, reject) => {
-        topicObj.publish({ data: data }, err => {
-            if (err) {
-                return reject(err);
-            }
-            resolve();
-        });
-    });
+function _subscribe(topic, subName) {
+    return topic.subscribe(subName, { reuseExisting: true }).then(data => data[0]);
 }
 
 export function subscribe(topicName, subName, handler) {
@@ -61,5 +42,5 @@ export function subscribe(topicName, subName, handler) {
 }
 
 export function publish(topicName, data) {
-    return _topic(topicName).then(topic => _publish(topic, data));
+    return _topic(topicName).then(topic => topic.publish(data));
 }
