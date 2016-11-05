@@ -161,7 +161,7 @@ export function visit(target, timestamp, info) {
             }
         });
 
-        if (queue.length ===  1) {
+        if (queue.length === 1) {
             getSeqId(target).then(insert);
         }
     });
@@ -176,7 +176,7 @@ function getSeqIds(target, seqIds) {
 }
 
 export function list(target, cursor=0) {
-    let query = datastore.createQuery("Visit")
+    const query = datastore.createQuery("Visit")
         .filter("target", target)
         .filter("seqId", ">=", cursor)
         .filter("seqId", "<=", Number.MAX_SAFE_INTEGER)

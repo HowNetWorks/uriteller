@@ -18,22 +18,20 @@ module.exports = {
         }
     },
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-console": "off"
+        // Stylistic Issues
+        "indent": ["error", 4],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "double"],
+        "semi": ["error", "always"],
+
+        // Possible Errors
+        "no-console": "off",
+        "no-unsafe-negation": "error",
+
+        // Best Practices
+        "no-multi-spaces": "error",
+
+        // ECMAScript 6
+        "prefer-const": "error"
     }
 };

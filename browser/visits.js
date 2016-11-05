@@ -30,7 +30,7 @@ function fetchJSON(url, timeout=15000) {
         xhr.open("GET", url);
         xhr.timeout = timeout;
 
-        xhr.addEventListener("load", ()  => {
+        xhr.addEventListener("load", () => {
             if (xhr.status !== 200) {
                 return reject(new RequestFailed(`status ${xhr.status} (${xhr.statusText})`));
             }
