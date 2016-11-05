@@ -2,8 +2,8 @@ service: worker
 runtime: custom
 vm: true
 
-manual_scaling:
-  instances: 2
+automatic_scaling:
+  min_num_instances: 2
 
 env_variables:
   SCRIPT: worker.js
