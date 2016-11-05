@@ -44,12 +44,14 @@ function queryMaxSeqId(target) {
         })
         .limit(1);
 
-    return doQuery(query).then(entities => {
-        if (entities.length === 0) {
-            return null;
-        }
-        return entities[0].seqId;
-    });
+    return query.run()
+        .then(data => data[0])
+        .then(entities => {
+            if (entities.length === 0) {
+                return null;
+            }
+            return entities[0].seqId;
+        });
 }
 
 
@@ -105,29 +107,8 @@ export function create() {
 }
 
 export function get(id) {
-    return new Promise((resolve, reject) => {
-        datastore.get(datastore.key(["Item", id]), (err, entry) => {
-            if (err) {
-                reject(err);
-            } else if (!entry) {
-                resolve(null);
-            } else {
-                resolve(entry);
-            }
-        });
-    });
-}
-
-function doQuery(query) {
-    return new Promise((resolve, reject) => {
-        query.run((err, entities) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(entities);
-            }
-        });
-    });
+    return datastore.get(datastore.key(["Item", id]))
+        .then(data => data[0] || null);
 }
 
 const visits = new Map();
@@ -190,16 +171,8 @@ function getSeqIds(target, seqIds) {
     if (seqIds.length === 0) {
         return Promise.resolve([]);
     }
-
-    return new Promise((resolve, reject) => {
-        const keys = seqIds.map(seqId => seqIdKey(target, seqId));
-        datastore.get(keys, (err, entities) => {
-            if (err) {
-                return reject(err);
-            }
-            return resolve(entities);
-        });
-    });
+    const keys = seqIds.map(seqId => seqIdKey(target, seqId));
+    return datastore.get(keys).then(data => data[0]);
 }
 
 export function list(target, cursor=0) {
@@ -209,7 +182,8 @@ export function list(target, cursor=0) {
         .filter("seqId", "<=", Number.MAX_SAFE_INTEGER)
         .order("seqId", { descending: true });
 
-    return doQuery(query)
+    return query.run()
+        .then(data => data[0])
         .then(entities => {
             const nextCursor = entities.reduce((previous, entity) => {
                 const seqId = entity.seqId + 1;
