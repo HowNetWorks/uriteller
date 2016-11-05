@@ -36,17 +36,16 @@ function seenSeqId(target, seqId) {
 function queryMaxSeqId(target) {
     const query = datastore.createQuery("Visit")
         .filter("target", target)
+        .filter("seqId", ">=", 0)
+        .filter("seqId", "<=", Number.MAX_SAFE_INTEGER)
         .select("seqId")
         .order("seqId", {
             descending: true
         })
-        .limit(2);
+        .limit(1);
 
-    return doQuery(query).then(_entities => {
-        const entities = _entities.filter(entity => {
-            return entity.seqId !== undefined && !isNaN(entity.seqId);
-        });
-        if (entities.length === 0 || entities[0].seqId === undefined) {
+    return doQuery(query).then(entities => {
+        if (entities.length === 0) {
             return null;
         }
         return entities[0].seqId;
@@ -207,15 +206,10 @@ export function list(target, cursor=0) {
     let query = datastore.createQuery("Visit")
         .filter("target", target)
         .filter("seqId", ">=", cursor)
+        .filter("seqId", "<=", Number.MAX_SAFE_INTEGER)
         .order("seqId", { descending: true });
 
     return doQuery(query)
-        .then(entities => {
-            return entities.filter(entity => {
-                const seqId = entity.seqId;
-                return seqId !== undefined & !isNaN(seqId);
-            });
-        })
         .then(entities => {
             const nextCursor = entities.reduce((previous, entity) => {
                 const seqId = entity.seqId + 1;
