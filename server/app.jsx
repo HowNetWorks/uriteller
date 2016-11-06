@@ -11,6 +11,7 @@ import request from "request";
 import * as taskQueue from "./lib/taskqueue";
 import * as store from "./lib/store";
 import render from "./lib/render";
+import anonymize from "./lib/anonymize";
 
 import Layout from "../lib/views/Layout";
 import Trap from "../lib/views/Trap";
@@ -91,7 +92,7 @@ const analytics = {
             cid: "unknown",
             dp: req.path,
             dr: info.referrer,
-            uip: info.ip,
+            uip: anonymize(info.ip),
             aip: "1",
             ua: info.userAgent
         }, ...overrides);
