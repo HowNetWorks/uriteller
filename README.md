@@ -8,11 +8,13 @@ The code in this repository is built for the Google Cloud Platform. See [Prerequ
 
 ## Technical Name-dropping
 
-URI:teller uses Google's [Cloud Datastore](https://cloud.google.com/datastore/) as the database and [Cloud Pub/Sub](https://cloud.google.com/pubsub/) for passing work between services. Stackdriver [Debugger](https://cloud.google.com/debugger/), [Trace](https://cloud.google.com/trace/) and [Error Reporting](https://cloud.google.com/error-reporting/) work if their respective APIs are enabled.
+URI:teller uses Google's [Cloud Datastore](https://cloud.google.com/datastore/) as the database and [Cloud Pub/Sub](https://cloud.google.com/pubsub/) for passing work between services. Stackdriver [Debugger](https://cloud.google.com/debugger/), [Trace](https://cloud.google.com/trace/) and [Error Reporting](https://cloud.google.com/error-reporting/) work if their respective APIs are enabled. The frontend service sends analytics to Google Analytics whent the `GA_TRACKING_ID` environment variable is set.
 
 The code is written in ES2015 plus some extensions, such as modules and JSX (suffixed with `.jsx` instead of `.js`). [Babel](https://babeljs.io/) then compiles the source to JavaScript that [Node.js](https://nodejs.org/en/) and browsers can handle. For styling: [SASS](http://sass-lang.com/).
 
 [React](https://facebook.github.io/react/) allows reusing the same view code for both server-side and in-browser rendering.
+
+[Express](http://expressjs.com/) (with its [Helmet](https://helmetjs.github.io/) on) powers the server side code.
 
 On the browser [Bootstrap 4](https://v4-alpha.getbootstrap.com/) makes things look nice. [Webpack 2](https://webpack.github.io/) crumples the code, styles and other assets into an easily distributable bundle.
 
