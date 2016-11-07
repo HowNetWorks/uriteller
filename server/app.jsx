@@ -6,12 +6,11 @@ import path from "path";
 import React from "react";
 import helmet from "helmet";
 import express from "express";
-import request from "request";
 
 import * as taskQueue from "./lib/taskqueue";
 import * as store from "./lib/store";
 import render from "./lib/render";
-import anonymize from "./lib/anonymize";
+import Analytics from "./lib/analytics";
 
 import Layout from "../lib/views/Layout";
 import Trap from "../lib/views/Trap";
@@ -68,6 +67,7 @@ function extractInfo(req) {
     });
 }
 
+const analytics = new Analytics(process.env.GA_TRACKING_ID);
 const app = express();
 app.use(helmet());
 
@@ -76,56 +76,6 @@ app.set("json spaces", 2);
 app.use("/", express.static(path.join(__dirname, "../static")));
 
 app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
-
-const analytics = {
-    trackingId: process.env.GA_TRACKING_ID,
-
-    send(req, ...overrides) {
-        if (!this.trackingId) {
-            return Promise.resolve();
-        }
-
-        const info = extractInfo(req);
-        const data = mergeAndClean({
-            v: "1",
-            tid: this.trackingId,
-            cid: "unknown",
-            dp: req.path,
-            dr: info.referrer,
-            uip: anonymize(info.ip),
-            aip: "1",
-            ua: info.userAgent
-        }, ...overrides);
-
-        return new Promise((resolve, reject) => {
-            request.post("https://www.google-analytics.com/collect", { form: data }, (err, response) => {
-                if (err) {
-                    reject(err);
-                } else if (response.statusCode !== 200) {
-                    reject(new Error(`Analytics request status ${response.statusCode}`));
-                } else {
-                    resolve();
-                }
-            });
-        });
-    },
-
-    pageView(req) {
-        return this.send(req, {
-            t: "pageview",
-        });
-    },
-
-    event(req, category, action, label, value) {
-        return this.send(req, {
-            t: "event",
-            ec: category,
-            ea: action,
-            el: label,
-            ev: value
-        });
-    }
-};
 
 app.get("/", (req, res) => {
     analytics.pageView(req).catch(errors.report);
