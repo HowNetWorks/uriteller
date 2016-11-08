@@ -1,14 +1,14 @@
 import React from "react";
 
 export default function Layout(_props) {
-    const { styles, scripts, children, ...props } = _props;
+    const { title, styles, scripts, children, ...props } = _props;
 
     return (
         <html {...props}>
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" type="image/png" href="/favicon.png" />
-                <title>URI:teller</title>
+                <title>{title}</title>
 
                 {styles.map((href, index) => <link key={index} rel="stylesheet" href={href} />)}
             </head>
