@@ -1,5 +1,6 @@
 import net from "net";
 import https from "https";
+import crypto from "crypto";
 import querystring from "querystring";
 import ipAddress from "ip-address";
 import request from "request";
@@ -105,16 +106,20 @@ export default class {
             return Promise.resolve();
         }
 
+        const ip = anonymizeIP(req.get("x-appengine-user-ip") || req.ip);
+        const ua = req.get("user-agent");
+        const cid = crypto.createHash("sha256").update(ip + ua).digest("hex");
+
         const data = Object.assign({
             v: "1",
             tid: this._trackingId,
-            cid: "unknown"
+            cid: cid
         }, {
             dp: req.path,
             dr: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
-            uip: anonymizeIP(req.get("x-appengine-user-ip") || req.ip),
+            uip: ip,
             aip: "1",
-            ua: req.get("user-agent")
+            ua: ua
         }, ...overrides);
 
         return new Promise((resolve, reject) => {
