@@ -71,6 +71,15 @@ function Table(_props) {
 }
 
 export default function Visits(props) {
+    let liveUpdates;
+    if (!props.js) {
+        liveUpdates = <noscript className="text-muted">live updates off</noscript>;
+    } else if (props.liveUpdateError) {
+        liveUpdates = <span className="text-warning">live updates off</span>;
+    } else {
+        liveUpdates = <span className="text-success">live updates on</span>;
+    }
+
     return (
         <div className="container">
             <section className="row">
@@ -100,8 +109,10 @@ export default function Visits(props) {
 
             <section className="row">
                 <div className="col-sm-12">
-                    <h4>Visits</h4>
-
+                    <h4 className="float-xs-left">Visits</h4>
+                    <div className="live-updates">
+                        {liveUpdates}
+                    </div>
                     {props.visits.length === 0 ? <NoVisits /> : <Table className="visits" visits={props.visits} js={props.js} />}
                 </div>
             </section>
@@ -112,5 +123,6 @@ export default function Visits(props) {
 Visits.propTypes = {
     trapUrl: React.PropTypes.string.isRequired,
     visits: React.PropTypes.array.isRequired,
-    js: React.PropTypes.bool.isRequired
+    js: React.PropTypes.bool.isRequired,
+    liveUpdateError: React.PropTypes.instanceOf(Error)
 };

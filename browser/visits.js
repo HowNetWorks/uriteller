@@ -57,7 +57,7 @@ function fetchJSON(url, timeout=15000) {
     });
 }
 
-function fetchUpdates(baseUrl, cursor, interval, minInterval, maxInterval, callback) {
+function fetchUpdates(baseUrl, cursor, interval, minInterval, maxInterval, currentErr, callback) {
     const parsedUrl = url.parse(baseUrl, true);
     parsedUrl.query.cursor = cursor;
 
@@ -67,16 +67,17 @@ function fetchUpdates(baseUrl, cursor, interval, minInterval, maxInterval, callb
         .then(
             json => {
                 const visits = json.visits;
-                if (visits.length > 0) {
+                if (currentErr || visits.length > 0) {
                     callback(null, visits);
                 }
-                fetchUpdates(baseUrl, json.cursor, minInterval, minInterval, maxInterval, callback);
+                fetchUpdates(baseUrl, json.cursor, minInterval, minInterval, maxInterval, null, callback);
             },
             err => {
-                callback(err, null);
-
+                if (!currentErr || String(currentErr) !== String(err)) {
+                    callback(err, null);
+                }
                 const newInterval = Math.min(interval * 2, maxInterval);
-                fetchUpdates(baseUrl, cursor, newInterval, minInterval, maxInterval, callback);
+                fetchUpdates(baseUrl, cursor, newInterval, minInterval, maxInterval, err, callback);
             }
         );
 }
@@ -87,15 +88,17 @@ function updateTable(_props, rootElement, minInterval=1000, maxInterval=15000) {
 
     const baseUrl = props.updateUrl;
     const cursor = props.updateCursor;
-    fetchUpdates(baseUrl, cursor, minInterval, minInterval, maxInterval, (err, visits) => {
+    fetchUpdates(baseUrl, cursor, minInterval, minInterval, maxInterval, null, (err, visits) => {
         if (err) {
-            console.error(err);
-            return;
+            props = Object.assign({}, props, {
+                liveUpdateError: err
+            });
+        } else {
+            props = Object.assign({}, props, {
+                visits: props.visits.concat(visits).sort(byTimestampDescending),
+                liveUpdateError: undefined
+            });
         }
-
-        props = Object.assign({}, props, {
-            visits: props.visits.concat(visits).sort(byTimestampDescending)
-        });
         render(<Visits {...props} />, rootElement);
     });
 }
