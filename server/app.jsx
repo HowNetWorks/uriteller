@@ -100,8 +100,6 @@ app.get("/new", (req, res, next) => {
 });
 
 app.get("/:id.json", (req, res, next) => {
-    analytics.event(req, "monitor", "poll").catch(errors.report);
-
     const id = req.params.id;
 
     let cursor = req.query.cursor;
