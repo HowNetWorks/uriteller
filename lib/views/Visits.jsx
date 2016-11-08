@@ -30,7 +30,7 @@ Cell.propTypes = {
 
 function NoVisits() {
     return (
-        <div className="text-muted">No-one has visited the trap yet.</div>
+        <div className="text-muted no-visits">No-one has visited the trap yet.</div>
     );
 }
 
@@ -82,7 +82,7 @@ export default function Visits(props) {
 
     return (
         <div className="container">
-            <section className="row">
+            <section className="row trap">
                 <div className="col-xs-12">
                     <h4>Monitoring visits to URL</h4>
                 </div>
@@ -107,13 +107,15 @@ export default function Visits(props) {
                 </div>
             </section>
 
-            <section className="row">
+            <section className="row monitor">
                 <div className="col-sm-12">
-                    <h4 className="float-xs-left">Visits</h4>
-                    <div className="live-updates">
-                        {liveUpdates}
+                    <div className="clearfix visits-header">
+                        <h4 className="float-xs-left">Visits</h4>
+                        <div className="live-updates">
+                            {liveUpdates}
+                        </div>
                     </div>
-                    {props.visits.length === 0 ? <NoVisits /> : <Table className="visits" visits={props.visits} js={props.js} />}
+                    {props.visits.length === 0 ? <NoVisits /> : <Table visits={props.visits} js={props.js} />}
                 </div>
             </section>
         </div>
