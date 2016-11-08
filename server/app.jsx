@@ -99,46 +99,16 @@ app.get("/new", (req, res, next) => {
         .catch(next);
 });
 
-app.get("/:id.json", (req, res, next) => {
-    const id = req.params.id;
-
-    let cursor = req.query.cursor;
-    if (Array.isArray(cursor)) {
-        return res.sendStatus(400);
-    } else if (cursor !== undefined) {
-        cursor = Number(cursor);
-    }
-
-    store.get(id)
-        .then(item => {
-            if (!item || !item.isView) {
-                return res.sendStatus(404);
-            }
-
-            return store.list(item.other, cursor).then(({ cursor, visits }) => {
-                res.json({
-                    cursor: cursor,
-                    trapUrl: fullUrl(req, item.other),
-                    visits: visits.map(entity => {
-                        return mergeAndClean(entity.info, {
-                            timestamp: entity.timestamp
-                        });
-                    })
-                });
-            });
-        })
-        .catch(next);
-});
-
-app.get("/:id", (req, res, next) => {
-    analytics.pageView(req).catch(errors.report);
-
+app.get("/:id([a-zA-Z0-9_-]{22})", (req, res, next) => {
     const id = req.params.id;
     store.get(id)
         .then(item => {
             if (!item) {
-                return res.sendStatus(404);
+                next();
+                return;
             }
+
+            analytics.pageView(req).catch(errors.report);
 
             if (!item.isView) {
                 analytics.event(req, "trap", "view").catch(errors.report);
@@ -179,6 +149,39 @@ app.get("/:id", (req, res, next) => {
                         <Visits {...initialData} />
                     </Layout>
                 ));
+            });
+        })
+        .catch(next);
+});
+
+app.get("/:id([a-zA-Z0-9_-]{22}).json", (req, res, next) => {
+    const id = req.params.id;
+
+    let cursor = req.query.cursor;
+    if (Array.isArray(cursor)) {
+        return res.sendStatus(400);
+    }
+    if (cursor !== undefined) {
+        cursor = Number(cursor);
+    }
+
+    store.get(id)
+        .then(item => {
+            if (!item || !item.isView) {
+                next();
+                return;
+            }
+
+            return store.list(item.other, cursor).then(({ cursor, visits }) => {
+                res.json({
+                    cursor: cursor,
+                    trapUrl: fullUrl(req, item.other),
+                    visits: visits.map(entity => {
+                        return mergeAndClean(entity.info, {
+                            timestamp: entity.timestamp
+                        });
+                    })
+                });
             });
         })
         .catch(next);
