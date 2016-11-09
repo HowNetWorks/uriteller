@@ -99,28 +99,40 @@ app.get("/new", (req, res, next) => {
         .catch(next);
 });
 
-app.get("/:id([a-zA-Z0-9_-]{22})", (req, res, next) => {
-    const id = req.params.id;
+function getData(req, target, cursor) {
+    return store.list(target, cursor).then(({ cursor, visits }) => {
+        return {
+            trapUrl: fullUrl(req, target),
+            cursor: cursor,
+            visits: visits.map(entity => {
+                return mergeAndClean(entity.info, {
+                    timestamp: entity.timestamp
+                });
+            })
+        };
+    });
+}
+
+app.get(/^\/([a-zA-Z0-9_-]{22})([./].*)?$/, (req, res, next) => {
+    const id = req.params[0];
+    const rest = req.params[1];
+
     store.get(id)
         .then(item => {
-            if (!item) {
-                next();
-                return;
-            }
-
-            analytics.pageView(req).catch(errors.report);
-
-            if (!item.isView) {
+            if (item && !item.isView) {
                 analytics.event(req, "trap", "view").catch(errors.report);
 
+                const suffix = req.url.substring(1 + id.length) || undefined;
                 return taskQueue.publish("trap-topic", {
                     target: id,
                     timestamp: Date.now(),
-                    info: extractInfo(req)
+                    info: mergeAndClean(extractInfo(req), {
+                        suffix: suffix || undefined
+                    })
                 }).then(() => {
                     const styles = [asset("common", "css")];
                     const scripts = [asset("common", "js")];
-                    res.send(render(
+                    res.status(404).send(render(
                         <Layout title="URI:teller trap" className="page-trap" styles={styles} scripts={scripts}>
                             <Trap />
                         </Layout>
@@ -128,64 +140,42 @@ app.get("/:id([a-zA-Z0-9_-]{22})", (req, res, next) => {
                 });
             }
 
-            return store.list(item.other).then(({ cursor, visits }) => {
-                const initialData = {
-                    js: false,
-                    trapUrl: fullUrl(req, item.other),
-                    updateUrl: fullUrl(req, id + ".json"),
-                    updateCursor: cursor,
-                    visits: visits.map(entity => {
-                        return mergeAndClean(entity.info, {
-                            timestamp: entity.timestamp
-                        });
-                    })
-                };
+            if (item && item.isView && !rest) {
+                analytics.pageView(req).catch(errors.report);
 
-                const styles = [asset("common", "css"), asset("visits", "css")];
-                const scripts = [asset("common", "js"), asset("visits", "js")];
-                res.send(render(
-                    <Layout title="URI:teller monitor" className="page-monitor" styles={styles} scripts={scripts}>
-                        <EmbeddedJSON id="initial-data" content={initialData} />
-                        <Visits {...initialData} />
-                    </Layout>
-                ));
-            });
-        })
-        .catch(next);
-});
+                return getData(req, item.other).then(data => {
+                    const initialData = mergeAndClean({
+                        js: false,
+                        updateUrl: fullUrl(req, id + ".json")
+                    }, data);
 
-app.get("/:id([a-zA-Z0-9_-]{22}).json", (req, res, next) => {
-    const id = req.params.id;
-
-    let cursor = req.query.cursor;
-    if (Array.isArray(cursor)) {
-        return res.sendStatus(400);
-    }
-    if (cursor !== undefined) {
-        cursor = Number(cursor);
-    }
-
-    store.get(id)
-        .then(item => {
-            if (!item || !item.isView) {
-                next();
-                return;
+                    const styles = [asset("common", "css"), asset("visits", "css")];
+                    const scripts = [asset("common", "js"), asset("visits", "js")];
+                    res.send(render(
+                        <Layout title="URI:teller monitor" className="page-monitor" styles={styles} scripts={scripts}>
+                            <EmbeddedJSON id="initial-data" content={initialData} />
+                            <Visits {...initialData} />
+                        </Layout>
+                    ));
+                });
             }
 
-            return store.list(item.other, cursor).then(({ cursor, visits }) => {
-                res.json({
-                    cursor: cursor,
-                    trapUrl: fullUrl(req, item.other),
-                    visits: visits.map(entity => {
-                        return mergeAndClean(entity.info, {
-                            timestamp: entity.timestamp
-                        });
-                    })
-                });
-            });
+            if (item && item.isView && rest === ".json") {
+                let cursor = req.query.cursor;
+                if (Array.isArray(cursor)) {
+                    return res.sendStatus(400);
+                }
+                if (cursor !== undefined) {
+                    cursor = Number(cursor);
+                }
+                return getData(req, item.other, cursor).then(data => res.json(data));
+            }
+
+            next();
         })
         .catch(next);
 });
+
 
 app.use(errors.express);
 

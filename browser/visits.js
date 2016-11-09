@@ -87,7 +87,7 @@ function updateTable(_props, rootElement, minInterval=1000, maxInterval=15000) {
     render(<Visits {...props} />, rootElement);
 
     const baseUrl = props.updateUrl;
-    const cursor = props.updateCursor;
+    const cursor = props.cursor;
     fetchUpdates(baseUrl, cursor, minInterval, minInterval, maxInterval, null, (err, visits) => {
         if (err) {
             props = Object.assign({}, props, {
