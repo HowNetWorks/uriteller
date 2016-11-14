@@ -4,19 +4,10 @@ machine:
   services:
     - docker
 
-dependencies:
-  cache_directories:
-    - ~/.yarn-cache
-  pre:
-    - mkdir -p ~/.cache/yarn
-    - curl -o- -L https://yarnpkg.com/install.sh | bash
-  override:
-    - yarn install
-
 test:
   override:
-    - yarn lint
-    - NODE_ENV=production yarn build
+    - npm run lint
+    - NODE_ENV=production npm run build
     - >
       docker build --tag=app --rm=false
       --build-arg GA_TRACKING_ID=${GA_TRACKING_ID}
