@@ -12,7 +12,7 @@ export default function Index() {
                             Are <strong>they</strong> calling back <strong>from beyond the cloud</strong>?
                         </p>
 
-                        <a className="btn btn-primary btn-lg" href="/new">Let's find out!</a>
+                        <a className="btn btn-primary btn-lg" href="/new" title="Create new URI:teller monitor and trap">Let's find out!</a>
                     </div>
                 </div>
             </div>
