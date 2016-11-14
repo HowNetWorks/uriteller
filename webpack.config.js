@@ -20,7 +20,7 @@ const config = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: "babel",
+                loader: "babel-loader",
                 query: {
                     presets: [["es2015", {modules: false}], "react"],
                     plugins: ["transform-object-rest-spread"]
@@ -30,13 +30,13 @@ const config = {
                 test: /\.s?css$/,
                 loader: ExtractTextPlugin.extract([
                     {
-                        loader: "css",
+                        loader: "css-loader",
                         query: {
                             minimize: production
                         }
                     },
                     {
-                        loader: "sass"
+                        loader: "sass-loader"
                     }
                 ])
             },
