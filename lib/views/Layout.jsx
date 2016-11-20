@@ -37,8 +37,8 @@ export default function Layout(_props) {
                         </div>
 
                         <div className="social">
-                            <a className="icon github" href="https://github.com/HowNetWorks/uriteller" target="_blank"/>
-                            <a className="icon twitter" href="https://twitter.com/HowNetWorksIO" target="_blank" />
+                            <a className="icon github" href="https://github.com/HowNetWorks/uriteller" title="URI:teller GitHub repository" target="_blank"/>
+                            <a className="icon twitter" href="https://twitter.com/HowNetWorksIO" title="HowNetWorks in Twitter" target="_blank" />
                         </div>
                     </div>
                 </footer>
