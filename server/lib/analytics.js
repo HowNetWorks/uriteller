@@ -5,6 +5,18 @@ import querystring from "querystring";
 import ipAddress from "ip-address";
 import request from "request";
 
+function clean(obj) {
+    const result = {};
+
+    Object.keys(obj).forEach(key => {
+        if (obj[key] !== void 0) {
+            result[key] = obj[key];
+        }
+    });
+
+    return result;
+}
+
 function anonymizeIP(ip) {
     if (net.isIP(ip)) {
         const ipv4 = new ipAddress.Address4(ip + "/24");
@@ -17,7 +29,7 @@ function anonymizeIP(ip) {
             return ipv6.startAddress().correctForm();
         }
     }
-    return undefined;
+    return void 0;
 }
 
 export default class {
@@ -110,17 +122,19 @@ export default class {
         const ua = req.get("user-agent");
         const cid = crypto.createHash("sha256").update(ip + ua).digest("hex");
 
-        const data = Object.assign({
-            v: "1",
-            tid: this._trackingId,
-            cid: cid
-        }, {
-            dp: req.path,
-            dr: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
-            uip: ip,
-            aip: "1",
-            ua: ua
-        }, ...overrides);
+        const data = clean(
+            Object.assign({
+                v: "1",
+                tid: this._trackingId,
+                cid: cid
+            }, {
+                dp: req.path,
+                dr: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
+                uip: ip,
+                aip: "1",
+                ua: ua
+            }, ...overrides)
+        );
 
         return new Promise((resolve, reject) => {
             this._push({
