@@ -18,8 +18,8 @@
     "helmet": "^3.0.0",
     "ip-address": "^5.8.2",
     "moment": "^2.15.1",
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2",
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0",
     "request": "^2.76.0"
   },
   "engines": {
@@ -38,7 +38,7 @@
     "babel-preset-es2015": "^6.16.0",
     "bootstrap": "4.0.0-alpha.5",
     "clean-webpack-plugin": "^0.1.13",
-    "css-loader": "^0.25.0",
+    "css-loader": "^0.26.0",
     "eslint": "^3.8.1",
     "eslint-plugin-react": "^6.4.1",
     "extract-text-webpack-plugin": "beta",
