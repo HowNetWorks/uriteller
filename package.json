@@ -45,6 +45,7 @@
     "file-loader": "^0.9.0",
     "node-sass": "^3.10.1",
     "sass-loader": "^4.0.2",
+    "url-loader": "^0.5.7",
     "webpack": "beta"
   },
   "babel": {

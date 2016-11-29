@@ -49,7 +49,7 @@ section {
 
     .logo {
       height: 128px;
-      background-image: url(utlogo.png);
+      background-image: url("utlogo.png");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: bottom center;
@@ -163,15 +163,15 @@ section {
       background-position: top;
 
       &.comic-1 {
-        background-image: url(1.png);
+        background-image: url("1.png");
       }
 
       &.comic-2 {
-        background-image: url(2.png);
+        background-image: url("2.png");
       }
 
       &.comic-3 {
-        background-image: url(3.png);
+        background-image: url("3.png");
       }
     }
   }
@@ -247,13 +247,13 @@ section {
     .logo:before {
       display: inline-block;
 
-      background-image: url(hnwlogo.png);
+      background-image: url("hnwlogo.svg");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: left;
-      vertical-align: text-top;
-      content: " ";
-      height: 1em;
+      content: "\00a0";
+      margin-right: 0.2em;
+      height: 1.4em;
       width: 2em;
     }
   }

@@ -42,7 +42,10 @@ const config = {
             },
             {
                 test: /\.(eot|woff2|woff|ttf|svg|png)$/,
-                loader: "file-loader"
+                loader: "url-loader",
+                query: {
+                    limit: 2048
+                }
             }
         ]
     },
