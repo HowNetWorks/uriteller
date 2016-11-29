@@ -5,16 +5,85 @@ const datastore = gcloud.datastore();
 
 // Return a string id with at least `n` bits of randomness. The returned string
 // will contain only characters [a-zA-Z0-9_-].
-function genId(n=128) {
+function genPageId(n=128) {
     const bytes = crypto.randomBytes(Math.ceil(n / 8.0));
     return bytes.toString("base64").replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
 }
 
-const cache = new Map();
+const pageIdCache = new Map();
+
+export function get(id) {
+    if (pageIdCache.has(id)) {
+        return Promise.resolve(pageIdCache.get(id));
+    }
+
+    return datastore.get(datastore.key(["Item", id]))
+        .then(data => {
+            const result = data[0] || null;
+            if (result !== null) {
+                pageIdCache.set(id, result);
+            }
+            return result;
+        });
+}
+
+export function create() {
+    function tryCreate(resolve, reject) {
+        const trapId = genPageId();
+        const viewId = genPageId();
+
+        const trapKey = datastore.key(["Item", trapId]);
+        const viewKey = datastore.key(["Item", viewId]);
+
+        const transaction = datastore.transaction();
+        transaction.run(err => {
+            if (err) {
+                return reject(err);
+            }
+
+            const trapData = {
+                isView: false,
+                other: viewId
+            };
+            const viewData = {
+                isView: true,
+                other: trapId
+            };
+
+            transaction.insert([
+                {
+                    key: trapKey,
+                    data: trapData
+                },
+                {
+                    key: viewKey,
+                    data: viewData
+                }
+            ]);
+            transaction.commit(err => {
+                if (err && err.code === 409) {
+                    return tryCreate(resolve, reject);
+                }
+                if (err) {
+                    return reject(err);
+                }
+                pageIdCache.set(trapId, trapData);
+                pageIdCache.set(viewId, viewData);
+                return resolve(viewId);
+            });
+        });
+    }
+
+    return new Promise((resolve, reject) => {
+        tryCreate(resolve, reject);
+    });
+}
+
+const seqIdCache = new Map();
 
 function getSeqId(target) {
-    if (cache.has(target)) {
-        return Promise.resolve(cache.get(target) + 1);
+    if (seqIdCache.has(target)) {
+        return Promise.resolve(seqIdCache.get(target) + 1);
     }
 
     return queryMaxSeqId(target).then(seqId => {
@@ -27,9 +96,9 @@ function getSeqId(target) {
 }
 
 function seenSeqId(target, seqId) {
-    const cached = cache.get(target);
+    const cached = seqIdCache.get(target);
     if (cached === undefined || cached < seqId) {
-        cache.set(target, seqId);
+        seqIdCache.set(target, seqId);
     }
 }
 
@@ -54,61 +123,8 @@ function queryMaxSeqId(target) {
         });
 }
 
-
 function seqIdKey(target, seqId) {
     return datastore.key(["Visit", seqId + "/" + target]);
-}
-
-export function create() {
-    function tryCreate(resolve, reject) {
-        const trap = genId();
-        const view = genId();
-
-        const trapKey = datastore.key(["Item", trap]);
-        const viewKey = datastore.key(["Item", view]);
-
-        const transaction = datastore.transaction();
-        transaction.run(err => {
-            if (err) {
-                return reject(err);
-            }
-
-            transaction.insert([
-                {
-                    key: trapKey,
-                    data: {
-                        isView: false,
-                        other: view
-                    }
-                },
-                {
-                    key: viewKey,
-                    data: {
-                        isView: true,
-                        other: trap
-                    }
-                }
-            ]);
-            transaction.commit(err => {
-                if (err && err.code === 409) {
-                    return tryCreate(resolve, reject);
-                }
-                if (err) {
-                    return reject(err);
-                }
-                return resolve(view);
-            });
-        });
-    }
-
-    return new Promise((resolve, reject) => {
-        tryCreate(resolve, reject);
-    });
-}
-
-export function get(id) {
-    return datastore.get(datastore.key(["Item", id]))
-        .then(data => data[0] || null);
 }
 
 const visits = new Map();
