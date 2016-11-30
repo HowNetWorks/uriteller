@@ -118,7 +118,7 @@ export default class {
             return Promise.resolve();
         }
 
-        const ip = anonymizeIP(req.get("x-appengine-user-ip") || req.ip);
+        const ip = anonymizeIP(req.ip);
         const ua = req.get("user-agent");
         const cid = crypto.createHash("sha256").update(ip + ua).digest("hex");
 

@@ -60,7 +60,7 @@ function extractInfo(req) {
     }
 
     return mergeAndClean({
-        ip: req.get("x-appengine-user-ip") || req.ip,
+        ip: req.ip,
         referrer: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
         country: country,
         userAgent: req.get("user-agent")
@@ -68,10 +68,26 @@ function extractInfo(req) {
 }
 
 const analytics = new Analytics(process.env.GA_TRACKING_ID);
+
 const app = express();
 app.use(helmet());
-
 app.set("json spaces", 2);
+app.set("trust proxy", true);
+
+// Fix x-forwarded-for and x-forwarded-proto for App Engine Flexible.
+app.use((req, res, next) => {
+    const https = req.get("x-appengine-https");
+    if (https) {
+        req.headers["x-forwarded-proto"] = https.toLowerCase() === "on" ? "https" : "http";
+    }
+
+    const ip = req.get("x-appengine-user-ip");
+    if (ip) {
+        req.headers["x-forwarded-for"] = ip;
+    }
+
+    next();
+});
 
 app.use("/", express.static(path.join(__dirname, "../static")));
 
