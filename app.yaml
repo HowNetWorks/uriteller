@@ -3,8 +3,3 @@ vm: true
 
 automatic_scaling:
   min_num_instances: 2
-
-handlers:
-- url: /.*
-  script: IGNORED
-  secure: always

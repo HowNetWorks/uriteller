@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Index() {
+export default function Trap(props) {
     return (
         <div className="container text-xs-center">
             <section className="row">
@@ -19,10 +19,14 @@ export default function Index() {
                         Want to find out more?
                     </p>
                     <p>
-                        <a href="/" className="btn btn-primary btn-lg">Visit URI:teller now</a>
+                        <a href={props.baseUrl} className="btn btn-primary btn-lg">Visit URI:teller now</a>
                     </p>
                 </div>
             </section>
         </div>
     );
 }
+
+Trap.propTypes = {
+    baseUrl: React.PropTypes.string.isRequired
+};

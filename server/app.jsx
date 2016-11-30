@@ -67,6 +67,8 @@ function extractInfo(req) {
     });
 }
 
+const PAGE_ID_REGEX = /^\/([a-zA-Z0-9_-]{22})([./].*)?$/;
+
 const analytics = new Analytics(process.env.GA_TRACKING_ID);
 
 const app = express();
@@ -87,6 +89,49 @@ app.use((req, res, next) => {
     }
 
     next();
+});
+
+app.get(PAGE_ID_REGEX, (req, res, next) => {
+    const id = req.params[0];
+    store.get(id)
+        .then(item => {
+            if (!item || item.isView) {
+                return;
+            }
+
+            analytics.event(req, "trap", "view").catch(errors.report);
+
+            const suffix = req.url.substring(1 + id.length) || undefined;
+            return taskQueue.publish("trap-topic", {
+                target: id,
+                timestamp: Date.now(),
+                info: mergeAndClean(extractInfo(req), {
+                    protocol: req.secure ? "https" : "http",
+                    suffix: suffix || undefined
+                })
+            });
+        })
+        .then(
+            () => next(),
+            err => next(err)
+        );
+});
+
+app.use((req, res, next) => {
+    if (req.secure) {
+        next();
+        return;
+    }
+
+    const redirect = fullUrl(req, req.path);
+    const protocol = url.parse(redirect).protocol;
+    if (protocol === "https:") {
+        res.redirect(redirect);
+    } else if (process.env.NODE_ENV !== "production" && protocol === "http:") {
+        next();
+    } else {
+        next(new Error("can't decide how to redirect an insecure request"));
+    }
 });
 
 app.use("/", express.static(path.join(__dirname, "../static")));
@@ -110,7 +155,7 @@ app.get("/new", (req, res, next) => {
 
     store.create()
         .then(view => {
-            res.redirect("/" + view);
+            res.redirect(fullUrl(req, view));
         })
         .catch(next);
 });
@@ -122,6 +167,7 @@ function getData(req, target, cursor) {
             cursor: cursor,
             visits: visits.map(entity => {
                 return mergeAndClean(entity.info, {
+                    protocol: entity.info.protocol || "https",
                     timestamp: entity.timestamp
                 });
             })
@@ -129,31 +175,20 @@ function getData(req, target, cursor) {
     });
 }
 
-app.get(/^\/([a-zA-Z0-9_-]{22})([./].*)?$/, (req, res, next) => {
+app.get(PAGE_ID_REGEX, (req, res, next) => {
     const id = req.params[0];
     const rest = req.params[1];
 
     store.get(id)
         .then(item => {
             if (item && !item.isView) {
-                analytics.event(req, "trap", "view").catch(errors.report);
-
-                const suffix = req.url.substring(1 + id.length) || undefined;
-                return taskQueue.publish("trap-topic", {
-                    target: id,
-                    timestamp: Date.now(),
-                    info: mergeAndClean(extractInfo(req), {
-                        suffix: suffix || undefined
-                    })
-                }).then(() => {
-                    const styles = [asset("common", "css")];
-                    const scripts = [asset("common", "js")];
-                    res.status(404).send(render(
-                        <Layout title="URI:teller trap" className="page-trap" styles={styles} scripts={scripts}>
-                            <Trap />
-                        </Layout>
-                    ));
-                });
+                const styles = [asset("common", "css")];
+                const scripts = [asset("common", "js")];
+                res.status(404).send(render(
+                    <Layout title="URI:teller trap" className="page-trap" styles={styles} scripts={scripts}>
+                        <Trap baseUrl={fullUrl(req, "/")} />
+                    </Layout>
+                ));
             }
 
             if (item && item.isView && !rest) {
@@ -191,7 +226,6 @@ app.get(/^\/([a-zA-Z0-9_-]{22})([./].*)?$/, (req, res, next) => {
         })
         .catch(next);
 });
-
 
 app.use(errors.express);
 
