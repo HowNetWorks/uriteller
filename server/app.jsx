@@ -72,7 +72,6 @@ const PAGE_ID_REGEX = /^\/([a-zA-Z0-9_-]{22})([./].*)?$/;
 const analytics = new Analytics(process.env.GA_TRACKING_ID);
 
 const app = express();
-app.use(helmet());
 app.set("json spaces", 2);
 app.set("trust proxy", true);
 
@@ -90,6 +89,8 @@ app.use((req, res, next) => {
 
     next();
 });
+
+app.use(helmet());
 
 app.get(PAGE_ID_REGEX, (req, res, next) => {
     const id = req.params[0];
