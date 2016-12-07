@@ -25,7 +25,6 @@ module.exports = {
         "semi": ["error", "always"],
 
         // Possible Errors
-        "no-console": "off",
         "no-unsafe-negation": "error",
 
         // Best Practices

@@ -15,6 +15,8 @@ app.get("/_ah/health", (req, res) => {
 
 const server = app.listen(process.env.PORT || 8080, () => {
     const addr = server.address();
+
+    // eslint-disable-next-line no-console
     console.log("Listening on port %s...", addr.port);
 });
 
