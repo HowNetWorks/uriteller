@@ -69,7 +69,10 @@ const config = {
             prettyPrint: true
         })
     ],
-    devtool: "eval-source-map"
+    devtool: "eval-source-map",
+    performance: {
+        hints: false
+    }
 };
 
 if (production) {
