@@ -17,7 +17,6 @@ function _topic(name) {
 
 function _subscribe(topic, subName) {
     const config = {
-        reuseExisting: true,
         maxInProgress: 512,
         ackDeadlineSeconds: 120
     };

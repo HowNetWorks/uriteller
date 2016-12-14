@@ -38,5 +38,5 @@ taskQueue.subscribe("trap-topic", "trap-subscription", (err, msg) => {
             return store.visit(data.target, data.timestamp, data.info);
         })
         .then(() => msg.ack())
-        .catch(err => errors.report(err));
-});
+        .catch(errors.report);
+}).catch(errors.report);
