@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
+    "@google/cloud-debug": "^0.9.0",
     "@google/cloud-errors": "^0.1.0",
     "@google/cloud-trace": "^0.5.8",
     "babel-cli": "^6.16.0",
