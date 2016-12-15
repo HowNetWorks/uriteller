@@ -32,11 +32,15 @@ const config = {
                     {
                         loader: "css-loader",
                         query: {
-                            minimize: production
+                            minimize: production,
+                            sourceMap: true
                         }
                     },
                     {
-                        loader: "sass-loader"
+                        loader: "sass-loader",
+                        query: {
+                            sourceMap: true
+                        }
                     }
                 ])
             },
