@@ -161,6 +161,8 @@ export function visit(target, timestamp, info) {
             queue.splice(0, chunk.length);
             if (queue.length === 0) {
                 visits.delete(target);
+            } else {
+                getSeqId(target).then(insert);
             }
         });
     }
