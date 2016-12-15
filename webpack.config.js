@@ -78,9 +78,7 @@ const config = {
 if (production) {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            },
+            sourceMap: true,
             mangle: true
         })
     );
