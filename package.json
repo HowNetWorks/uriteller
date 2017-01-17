@@ -17,7 +17,6 @@
     "google-cloud": "^0.45.1",
     "helmet": "^3.0.0",
     "ip-address": "^5.8.2",
-    "moment": "^2.15.1",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "request": "^2.76.0"
