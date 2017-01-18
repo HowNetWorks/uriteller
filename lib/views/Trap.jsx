@@ -2,9 +2,9 @@ import React from "react";
 
 export default function Trap({ baseUrl }) {
     return (
-        <div className="container text-xs-center">
+        <div className="container text-center">
             <section className="row">
-                <div className="col-xs-12">
+                <div className="col-12">
                     <h1>Howdy, stranger</h1>
 
                     <p className="lead">
@@ -14,7 +14,7 @@ export default function Trap({ baseUrl }) {
             </section>
 
             <section className="row">
-                <div className="col-xs-12">
+                <div className="col-12">
                     <p className="lead">
                         Want to find out more?
                     </p>

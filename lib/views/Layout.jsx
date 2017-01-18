@@ -12,7 +12,7 @@ export default function Layout({ title, styles, scripts, children, ...props }) {
             </head>
 
             <body>
-                <nav className="navbar navbar-fixed-top navbar-light bg-faded">
+                <nav className="navbar fixed-top navbar-light bg-faded">
                     <div className="container">
                         <a className="navbar-brand" href="/">URI:teller</a>
                     </div>
@@ -23,14 +23,14 @@ export default function Layout({ title, styles, scripts, children, ...props }) {
                 </div>
 
                 <footer className="footer text-muted">
-                    <div className="container text-xs-center">
+                    <div className="container text-center">
                         <hr />
 
-                        <div className="float-xs-left logo">
+                        <div className="float-left logo">
                             HowNetWorks
                         </div>
 
-                        <div className="float-xs-right blurb">
+                        <div className="float-right blurb">
                             Made with &#9986; in Finland
                         </div>
 

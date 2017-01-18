@@ -86,11 +86,11 @@ export default function Visits({ trapUrl, visits, js, liveUpdateError }) {
     return (
         <div className="container">
             <section className="row trap">
-                <div className="col-xs-12">
+                <div className="col-12">
                     <h4>Monitoring visits to URL</h4>
                 </div>
 
-                <div className="col-xs-12 col-lg-8">
+                <div className="col-12 col-lg-8">
                     <div className="input-group trap-group">
                         <input className="form-control trap-url" value={trapUrl} readOnly />
 
@@ -102,7 +102,7 @@ export default function Visits({ trapUrl, visits, js, liveUpdateError }) {
                     </div>
                 </div>
 
-                <div className="col-xs-12 col-lg-4 text-justify help">
+                <div className="col-12 col-lg-4 text-justify help">
                     This is your <strong>trap URL</strong>. Copy-paste it to
                     your favorite messaging app, URL shortener or social network
                     site. This <strong>monitor page</strong> shows who visits
@@ -113,7 +113,7 @@ export default function Visits({ trapUrl, visits, js, liveUpdateError }) {
             <section className="row monitor">
                 <div className="col-sm-12">
                     <div className="clearfix visits-header">
-                        <h4 className="float-xs-left">Visits</h4>
+                        <h4 className="float-left">Visits</h4>
                         <div className="live-updates">
                             {liveUpdates}
                         </div>

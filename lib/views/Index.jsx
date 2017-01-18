@@ -5,9 +5,9 @@ export default function Index() {
         <div>
             <div className="heading">
                 <div className="row">
-                    <div className="col-xs-12 col-md-7 col-lg-6 offset-lg-1 logo" />
+                    <div className="col-12 col-md-7 col-lg-6 offset-lg-1 logo" />
 
-                    <div className="col-xs-12 col-md-5 col-lg-4 col-xl-3 blurb">
+                    <div className="col-12 col-md-5 col-lg-4 col-xl-3 blurb">
                         <p className="lead">
                             Are <strong>they</strong> calling back <strong>from beyond the cloud</strong>?
                         </p>
