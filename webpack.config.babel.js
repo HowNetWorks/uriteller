@@ -1,8 +1,8 @@
-const path = require("path");
-const webpack = require("webpack");
-const AssetsPlugin = require("assets-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+import path from "path";
+import webpack from "webpack";
+import AssetsPlugin from "assets-webpack-plugin";
+import ExtractTextPlugin from "extract-text-webpack-plugin";
+import CleanWebpackPlugin from "clean-webpack-plugin";
 
 const production = process.env.NODE_ENV === "production";
 
@@ -89,4 +89,4 @@ if (production) {
     config.devtool = "source-map";
 }
 
-module.exports = config;
+export default config;
