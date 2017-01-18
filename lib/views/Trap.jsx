@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Trap(props) {
+export default function Trap({ baseUrl }) {
     return (
         <div className="container text-xs-center">
             <section className="row">
@@ -19,7 +19,7 @@ export default function Trap(props) {
                         Want to find out more?
                     </p>
                     <p>
-                        <a href={props.baseUrl} className="btn btn-primary btn-lg">Visit URI:teller now</a>
+                        <a href={baseUrl} className="btn btn-primary btn-lg">Visit URI:teller now</a>
                     </p>
                 </div>
             </section>

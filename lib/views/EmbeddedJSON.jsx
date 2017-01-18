@@ -9,8 +9,7 @@ function stringify(obj) {
     };
 }
 
-export default function EmbeddedJSON(props) {
-    const { content, ...rest } = props;
+export default function EmbeddedJSON({ content, ...rest }) {
     return <script type="application/json" dangerouslySetInnerHTML={stringify(content)} {...rest} />;
 }
 

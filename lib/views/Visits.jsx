@@ -10,14 +10,15 @@ function hasContent(children) {
     });
 }
 
-function Cell(_props) {
-    const { header, className, ...props } = _props;
-    const newClassName = classNames(className, { "no-content": !hasContent(props.children) });
+function Cell({ header, className, children, ...props }) {
+    const newClassName = classNames(className, { "no-content": !hasContent(children) });
 
     return (
         <td className={newClassName}>
             <span className="cell-header">{header}</span>
-            <span className="cell-content" {...props} />
+            <span className="cell-content" {...props}>
+                {children}
+            </span>
         </td>
     );
 }
@@ -34,12 +35,9 @@ function NoVisits() {
     );
 }
 
-function Table(_props) {
-    const { className, visits, js, ...props } = _props;
-    const cn = classNames("table", "table-striped", className);
-
+function Table({ visits, js, ...props }) {
     return (
-        <table className={cn} {...props}>
+        <table className="table table-striped" {...props}>
             <thead>
                 <tr>
                     <th>Time</th>
@@ -70,11 +68,16 @@ function Table(_props) {
     );
 }
 
-export default function Visits(props) {
+Table.propTypes = {
+    visits: React.PropTypes.array.isRequired,
+    js: React.PropTypes.bool.isRequired
+};
+
+export default function Visits({ trapUrl, visits, js, liveUpdateError }) {
     let liveUpdates;
-    if (!props.js) {
+    if (!js) {
         liveUpdates = <noscript className="text-muted">live updates off</noscript>;
-    } else if (props.liveUpdateError) {
+    } else if (liveUpdateError) {
         liveUpdates = <span className="text-warning">live updates off</span>;
     } else {
         liveUpdates = <span className="text-success">live updates on</span>;
@@ -89,10 +92,10 @@ export default function Visits(props) {
 
                 <div className="col-xs-12 col-lg-8">
                     <div className="input-group trap-group">
-                        <input className="form-control trap-url" value={props.trapUrl} readOnly />
+                        <input className="form-control trap-url" value={trapUrl} readOnly />
 
                         <span className="input-group-btn">
-                            <CopyButton className="btn btn-primary" text={props.trapUrl} disabled={!props.js}>
+                            <CopyButton className="btn btn-primary" text={trapUrl} disabled={!js}>
                                 copy
                             </CopyButton>
                         </span>
@@ -115,7 +118,7 @@ export default function Visits(props) {
                             {liveUpdates}
                         </div>
                     </div>
-                    {props.visits.length === 0 ? <NoVisits /> : <Table visits={props.visits} js={props.js} />}
+                    {visits.length === 0 ? <NoVisits /> : <Table visits={visits} js={js} />}
                 </div>
             </section>
         </div>

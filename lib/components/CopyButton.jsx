@@ -1,8 +1,7 @@
 import React from "react";
 import copyToClipboard from "../copy-to-clipboard";
 
-export default function CopyButton(_props) {
-    const { text, ...props } = _props;
+export default function CopyButton({ text, ...props }) {
     return <button onClick={() => copyToClipboard(text)} {...props} />;
 }
 

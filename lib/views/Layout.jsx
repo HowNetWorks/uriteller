@@ -1,8 +1,6 @@
 import React from "react";
 
-export default function Layout(_props) {
-    const { title, styles, scripts, children, ...props } = _props;
-
+export default function Layout({ title, styles, scripts, children, ...props }) {
     return (
         <html {...props}>
             <head>
@@ -50,6 +48,7 @@ export default function Layout(_props) {
 }
 
 Layout.propTypes = {
+    title: React.PropTypes.string.isRequired,
     styles: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     scripts: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     children: React.PropTypes.node
