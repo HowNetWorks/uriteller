@@ -43,7 +43,7 @@
     "node-sass": "^4.0.0",
     "sass-loader": "^4.1.0",
     "url-loader": "^0.5.7",
-    "webpack": "beta"
+    "webpack": "^2.2.0"
   },
   "babel": {
     "presets": [

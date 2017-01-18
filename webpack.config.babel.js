@@ -6,22 +6,30 @@ import CleanWebpackPlugin from "clean-webpack-plugin";
 
 const production = process.env.NODE_ENV === "production";
 
+// A helper to create paths relative to this config file
+function p(...paths) {
+    return path.join(__dirname, ...paths);
+}
+
 const config = {
     entry: {
-        common: path.join(__dirname, "browser/common.js"),
-        visits: path.join(__dirname, "browser/visits.js")
+        common: p("browser/common.js"),
+        visits: p("browser/visits.js")
     },
     output: {
-        path: path.join(__dirname, "build/assets"),
+        path: p("build/assets"),
         filename: "[name]-[chunkhash].js"
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
+                include: [
+                    p("lib"),
+                    p("browser")
+                ],
                 loader: "babel-loader",
-                query: {
+                options: {
                     presets: [["env", {modules: false}], "react"],
                     plugins: ["transform-object-rest-spread"]
                 }
@@ -47,7 +55,7 @@ const config = {
             {
                 test: /\.(eot|woff2|woff|ttf|svg|png)$/,
                 loader: "url-loader",
-                query: {
+                options: {
                     limit: 2048
                 }
             }
@@ -68,22 +76,18 @@ const config = {
         }),
         new ExtractTextPlugin("[name]-[contenthash].css"),
         new AssetsPlugin({
-            path: path.join(__dirname, "build"),
+            path: p("build"),
             filename: "assets.json",
             prettyPrint: true
         })
     ],
-    devtool: "eval-source-map",
-    performance: {
-        hints: false
-    }
+    devtool: "eval-source-map"
 };
 
 if (production) {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true,
-            mangle: true
+            sourceMap: true
         })
     );
     config.devtool = "source-map";
