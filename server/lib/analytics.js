@@ -9,7 +9,7 @@ function clean(obj) {
     const result = {};
 
     Object.keys(obj).forEach(key => {
-        if (obj[key] !== void 0) {
+        if (obj[key]) {
             result[key] = obj[key];
         }
     });
@@ -122,19 +122,20 @@ export default class {
         const ua = req.get("user-agent");
         const cid = crypto.createHash("sha256").update(ip + ua).digest("hex");
 
-        const data = clean(
-            Object.assign({
-                v: "1",
-                tid: this._trackingId,
-                cid: cid
-            }, {
-                dp: req.path,
-                dr: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
-                uip: ip,
-                aip: "1",
-                ua: ua
-            }, ...overrides)
-        );
+        const data = clean({
+            v: "1",
+            tid: this._trackingId,
+            cid: cid,
+
+            dh: req.hostname,
+            dp: req.path,
+            dr: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
+            uip: ip,
+            aip: "1",
+            ua: ua,
+
+            ...overrides
+        });
 
         return new Promise((resolve, reject) => {
             this._push({
@@ -147,7 +148,7 @@ export default class {
 
     pageView(req) {
         return this._send(req, {
-            t: "pageview",
+            t: "pageview"
         });
     }
 
