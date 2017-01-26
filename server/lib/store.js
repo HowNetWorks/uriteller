@@ -210,7 +210,7 @@ export function list(target, cursor=0) {
 
             const available = new Set(entities.map(entity => entity.seqId));
             const missing = [];
-            for (var i = cursor; i < nextCursor; i++) {
+            for (let i = cursor; i < nextCursor; i++) {
                 if (!available.has(i)) {
                     missing.push(i);
                 }
