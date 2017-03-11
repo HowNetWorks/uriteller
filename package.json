@@ -26,8 +26,9 @@
   "scripts": {
     "start": "BABEL_DISABLE_CACHE=1 babel-node server/${SCRIPT:-app.jsx}",
     "lint": "eslint --ignore-path=.gitignore --ext=.js,.jsx .",
-    "build": "webpack",
-    "deploy": "NODE_ENV=production npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
+    "dev": "NODE_ENV=development webpack -d --watch",
+    "build": "NODE_ENV=production webpack -p",
+    "deploy": "npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
   },
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.1",
@@ -43,7 +44,8 @@
     "node-sass": "^4.5.0",
     "sass-loader": "^6.0.3",
     "url-loader": "^0.5.8",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "style-loader": "^0.13.2"
   },
   "babel": {
     "presets": [

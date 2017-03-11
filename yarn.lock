@@ -5260,6 +5260,12 @@ stubs@^1.1.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/stubs/-/stubs-1.1.2.tgz#945a08975016318762f8f7060731002ab2a0960c"
 
+style-loader@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.13.2.tgz#74533384cf698c7104c7951150b49717adc2f3bb"
+  dependencies:
+    loader-utils "^1.0.2"
+
 supports-color@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-0.2.0.tgz#d92de2694eb3f67323973d7ae3d8b55b4c22190a"

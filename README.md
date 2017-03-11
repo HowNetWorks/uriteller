@@ -55,7 +55,7 @@ $ npm install
 Watch and rebuild client side assets on changes:
 
 ```sh
-$ npm run build -- --watch
+$ npm run dev
 ```
 
 ### Server
