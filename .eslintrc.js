@@ -21,7 +21,7 @@ module.exports = {
     "rules": {
         // Stylistic Issues
         "camelcase": "error",
-        "indent": ["error", 4],
+        "indent": ["error", 2, { "MemberExpression": 1 }],
         "linebreak-style": ["error", "unix"],
         "quotes": ["error", "double"],
         "semi": ["error", "always"],
@@ -40,7 +40,7 @@ module.exports = {
         "prefer-const": "error",
 
         // React
-        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent": ["error", 2],
         "react/no-unknown-property": "error",
         "react/jsx-no-target-blank": "error"
     }

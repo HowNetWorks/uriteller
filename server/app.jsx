@@ -19,52 +19,52 @@ import Visits from "../lib/views/Visits";
 import EmbeddedJSON from "../lib/views/EmbeddedJSON";
 
 function loadAssetMap() {
-    const assetMapPath = path.join(__dirname, "../build/assets.json");
-    return JSON.parse(fs.readFileSync(assetMapPath));
+  const assetMapPath = path.join(__dirname, "../build/assets.json");
+  return JSON.parse(fs.readFileSync(assetMapPath));
 }
 
 let assetMap = loadAssetMap();
 
 function asset(name, kind) {
-    if (process.env.NODE_ENV !== "production") {
-        assetMap = loadAssetMap();
-    }
-    return url.resolve("/assets/", assetMap[name][kind]);
+  if (process.env.NODE_ENV !== "production") {
+    assetMap = loadAssetMap();
+  }
+  return url.resolve("/assets/", assetMap[name][kind]);
 }
 
 function fullUrl(req, path) {
-    const baseUrl = process.env.APP_BASE_URL;
-    return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
+  const baseUrl = process.env.APP_BASE_URL;
+  return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
 }
 
 function mergeAndClean(...objs) {
-    const result = {};
-    objs.forEach(obj => {
-        Object.keys(obj).forEach(key => {
-            if (obj[key] !== undefined) {
-                result[key] = obj[key];
-            } else {
-                delete result[key];
-            }
-        });
+  const result = {};
+  objs.forEach(obj => {
+    Object.keys(obj).forEach(key => {
+      if (obj[key] !== undefined) {
+        result[key] = obj[key];
+      } else {
+        delete result[key];
+      }
     });
-    return result;
+  });
+  return result;
 }
 
 function extractInfo(req) {
-    // Google App Engine passes in an approximate geolocation in header
-    // "x-appengine-country" and uses code "ZZ" for unknown locations.
-    let country = req.get("x-appengine-country");
-    if (!country || country === "ZZ") {
-        country = undefined;
-    }
+  // Google App Engine passes in an approximate geolocation in header
+  // "x-appengine-country" and uses code "ZZ" for unknown locations.
+  let country = req.get("x-appengine-country");
+  if (!country || country === "ZZ") {
+    country = undefined;
+  }
 
-    return mergeAndClean({
-        ip: req.ip,
-        referrer: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
-        country: country,
-        userAgent: req.get("user-agent")
-    });
+  return mergeAndClean({
+    ip: req.ip,
+    referrer: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
+    country: country,
+    userAgent: req.get("user-agent")
+  });
 }
 
 const PAGE_ID_REGEX = /^\/([a-zA-Z0-9_-]{22})([./].*)?$/;
@@ -77,62 +77,62 @@ app.set("trust proxy", true);
 
 // Fix x-forwarded-for and x-forwarded-proto for App Engine Flexible.
 app.use((req, res, next) => {
-    const https = req.get("x-appengine-https");
-    if (https) {
-        req.headers["x-forwarded-proto"] = https.toLowerCase() === "on" ? "https" : "http";
-    }
+  const https = req.get("x-appengine-https");
+  if (https) {
+    req.headers["x-forwarded-proto"] = https.toLowerCase() === "on" ? "https" : "http";
+  }
 
-    const ip = req.get("x-appengine-user-ip");
-    if (ip) {
-        req.headers["x-forwarded-for"] = ip;
-    }
+  const ip = req.get("x-appengine-user-ip");
+  if (ip) {
+    req.headers["x-forwarded-for"] = ip;
+  }
 
-    next();
+  next();
 });
 
 app.use(helmet());
 
 app.get(PAGE_ID_REGEX, (req, res, next) => {
-    const id = req.params[0];
-    store.get(id)
-        .then(item => {
-            if (!item || item.isView) {
-                return;
-            }
+  const id = req.params[0];
+  store.get(id)
+    .then(item => {
+      if (!item || item.isView) {
+        return;
+      }
 
-            analytics.event(req, "trap", "view").catch(errors.report);
+      analytics.event(req, "trap", "view").catch(errors.report);
 
-            const suffix = req.url.substring(1 + id.length) || undefined;
-            return taskQueue.publish("trap-topic", {
-                target: id,
-                timestamp: Date.now(),
-                info: mergeAndClean(extractInfo(req), {
-                    protocol: req.secure ? "https" : "http",
-                    suffix: suffix || undefined
-                })
-            });
+      const suffix = req.url.substring(1 + id.length) || undefined;
+      return taskQueue.publish("trap-topic", {
+        target: id,
+        timestamp: Date.now(),
+        info: mergeAndClean(extractInfo(req), {
+          protocol: req.secure ? "https" : "http",
+          suffix: suffix || undefined
         })
-        .then(
-            () => next(),
-            err => next(err)
-        );
+      });
+    })
+    .then(
+      () => next(),
+      err => next(err)
+    );
 });
 
 app.use((req, res, next) => {
-    if (req.secure) {
-        next();
-        return;
-    }
+  if (req.secure) {
+    next();
+    return;
+  }
 
-    const redirect = fullUrl(req, req.path);
-    const protocol = url.parse(redirect).protocol;
-    if (protocol === "https:") {
-        res.redirect(redirect);
-    } else if (process.env.NODE_ENV !== "production" && protocol === "http:") {
-        next();
-    } else {
-        next(new Error("can't decide how to redirect an insecure request"));
-    }
+  const redirect = fullUrl(req, req.path);
+  const protocol = url.parse(redirect).protocol;
+  if (protocol === "https:") {
+    res.redirect(redirect);
+  } else if (process.env.NODE_ENV !== "production" && protocol === "http:") {
+    next();
+  } else {
+    next(new Error("can't decide how to redirect an insecure request"));
+  }
 });
 
 app.use("/", express.static(path.join(__dirname, "../static")));
@@ -140,99 +140,99 @@ app.use("/", express.static(path.join(__dirname, "../static")));
 app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
 
 app.get("/", (req, res) => {
-    analytics.pageView(req).catch(errors.report);
+  analytics.pageView(req).catch(errors.report);
 
-    const styles = [asset("common", "css")];
-    const scripts = [asset("common", "js")];
-    res.send(render(
-        <Layout title="URI:teller" className="page-index" styles={styles} scripts={scripts}>
-            <Index />
-        </Layout>
+  const styles = [asset("common", "css")];
+  const scripts = [asset("common", "js")];
+  res.send(render(
+    <Layout title="URI:teller" className="page-index" styles={styles} scripts={scripts}>
+      <Index />
+    </Layout>
     ));
 });
 
 app.get("/new", (req, res, next) => {
-    analytics.pageView(req).catch(errors.report);
+  analytics.pageView(req).catch(errors.report);
 
-    store.create()
-        .then(view => {
-            res.redirect(fullUrl(req, view));
-        })
-        .catch(next);
+  store.create()
+    .then(view => {
+      res.redirect(fullUrl(req, view));
+    })
+    .catch(next);
 });
 
 function getData(req, target, cursor) {
-    return store.list(target, cursor).then(({ cursor, visits }) => {
-        return {
-            trapUrl: fullUrl(req, target),
-            cursor: cursor,
-            visits: visits.map(entity => {
-                return mergeAndClean(entity.info, {
-                    protocol: entity.info.protocol || "https",
-                    timestamp: entity.timestamp
-                });
-            })
-        };
-    });
+  return store.list(target, cursor).then(({ cursor, visits }) => {
+    return {
+      trapUrl: fullUrl(req, target),
+      cursor: cursor,
+      visits: visits.map(entity => {
+        return mergeAndClean(entity.info, {
+          protocol: entity.info.protocol || "https",
+          timestamp: entity.timestamp
+        });
+      })
+    };
+  });
 }
 
 app.get(PAGE_ID_REGEX, (req, res, next) => {
-    const id = req.params[0];
-    const rest = req.params[1];
+  const id = req.params[0];
+  const rest = req.params[1];
 
-    store.get(id)
-        .then(item => {
-            if (item && !item.isView) {
-                const styles = [asset("common", "css")];
-                const scripts = [asset("common", "js")];
-                res.status(404).send(render(
-                    <Layout title="URI:teller trap" className="page-trap" styles={styles} scripts={scripts}>
-                        <Trap baseUrl={fullUrl(req, "/")} />
-                    </Layout>
-                ));
-            }
+  store.get(id)
+    .then(item => {
+      if (item && !item.isView) {
+        const styles = [asset("common", "css")];
+        const scripts = [asset("common", "js")];
+        res.status(404).send(render(
+          <Layout title="URI:teller trap" className="page-trap" styles={styles} scripts={scripts}>
+            <Trap baseUrl={fullUrl(req, "/")} />
+          </Layout>
+        ));
+      }
 
-            if (item && item.isView && !rest) {
-                analytics.pageView(req).catch(errors.report);
+      if (item && item.isView && !rest) {
+        analytics.pageView(req).catch(errors.report);
 
-                return getData(req, item.other).then(data => {
-                    const initialData = mergeAndClean({
-                        js: false,
-                        updateUrl: fullUrl(req, id + ".json")
-                    }, data);
+        return getData(req, item.other).then(data => {
+          const initialData = mergeAndClean({
+            js: false,
+            updateUrl: fullUrl(req, id + ".json")
+          }, data);
 
-                    const styles = [asset("common", "css"), asset("visits", "css")];
-                    const scripts = [asset("common", "js"), asset("visits", "js")];
-                    res.send(render(
-                        <Layout title="URI:teller monitor" className="page-monitor" styles={styles} scripts={scripts}>
-                            <EmbeddedJSON id="initial-data" content={initialData} />
-                            <Visits {...initialData} />
-                        </Layout>
-                    ));
-                });
-            }
+          const styles = [asset("common", "css"), asset("visits", "css")];
+          const scripts = [asset("common", "js"), asset("visits", "js")];
+          res.send(render(
+            <Layout title="URI:teller monitor" className="page-monitor" styles={styles} scripts={scripts}>
+              <EmbeddedJSON id="initial-data" content={initialData} />
+              <Visits {...initialData} />
+            </Layout>
+          ));
+        });
+      }
 
-            if (item && item.isView && rest === ".json") {
-                let cursor = req.query.cursor;
-                if (Array.isArray(cursor)) {
-                    return res.sendStatus(400);
-                }
-                if (cursor !== undefined) {
-                    cursor = Number(cursor);
-                }
-                return getData(req, item.other, cursor).then(data => res.json(data));
-            }
+      if (item && item.isView && rest === ".json") {
+        let cursor = req.query.cursor;
+        if (Array.isArray(cursor)) {
+          return res.sendStatus(400);
+        }
+        if (cursor !== undefined) {
+          cursor = Number(cursor);
+        }
+        return getData(req, item.other, cursor).then(data => res.json(data));
+      }
 
-            next();
-        })
-        .catch(next);
+      next();
+    })
+    .catch(next);
 });
 
 app.use(errors.express);
 
 const server = app.listen(process.env.PORT || 8080, () => {
-    const addr = server.address();
+  const addr = server.address();
 
     // eslint-disable-next-line no-console
-    console.log("Listening on port %s...", addr.port);
+  console.log("Listening on port %s...", addr.port);
 });
