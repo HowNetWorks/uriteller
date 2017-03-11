@@ -6,19 +6,19 @@
   "dependencies": {
     "@google/cloud-debug": "^0.9.0",
     "@google/cloud-errors": "^0.1.0",
-    "@google/cloud-trace": "^0.6.0",
-    "babel-cli": "^6.16.0",
-    "babel-plugin-transform-object-rest-spread": "^6.16.0",
-    "babel-preset-env": "^1.1.8",
-    "babel-preset-react": "^6.16.0",
+    "@google/cloud-trace": "^0.6.2",
+    "babel-cli": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.2.1",
+    "babel-preset-react": "^6.23.0",
     "classnames": "^2.2.5",
-    "express": "^4.14.0",
+    "express": "^4.15.2",
     "google-cloud": "^0.45.1",
-    "helmet": "^3.0.0",
+    "helmet": "^3.5.0",
     "ip-address": "^5.8.2",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
-    "request": "^2.76.0"
+    "request": "^2.81.0"
   },
   "engines": {
     "node": "^6.0.0"
@@ -30,20 +30,20 @@
     "deploy": "NODE_ENV=production npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
   },
   "devDependencies": {
-    "assets-webpack-plugin": "^3.5.0",
-    "babel-core": "^6.17.0",
-    "babel-loader": "^6.2.5",
+    "assets-webpack-plugin": "^3.5.1",
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.4.0",
     "bootstrap": "4.0.0-alpha.6",
     "clean-webpack-plugin": "^0.1.13",
-    "css-loader": "^0.26.0",
+    "css-loader": "^0.27.1",
     "eslint": "^3.17.1",
-    "eslint-plugin-react": "^6.4.1",
+    "eslint-plugin-react": "^6.10.0",
     "extract-text-webpack-plugin": "^2.1.0",
-    "file-loader": "^0.9.0",
-    "node-sass": "^4.0.0",
-    "sass-loader": "^4.1.0",
-    "url-loader": "^0.5.7",
-    "webpack": "^2.2.0"
+    "file-loader": "^0.10.1",
+    "node-sass": "^4.5.0",
+    "sass-loader": "^6.0.3",
+    "url-loader": "^0.5.8",
+    "webpack": "^2.2.1"
   },
   "babel": {
     "presets": [
