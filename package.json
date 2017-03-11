@@ -13,7 +13,7 @@
     "babel-preset-react": "^6.23.0",
     "classnames": "^2.2.5",
     "express": "^4.15.2",
-    "google-cloud": "^0.45.1",
+    "google-cloud": "^0.48.0",
     "helmet": "^3.5.0",
     "ip-address": "^5.8.2",
     "react": "^15.4.0",
