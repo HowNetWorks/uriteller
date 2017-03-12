@@ -1,5 +1,5 @@
 <template>
-  <td :class="[name, { 'no-content': noContent }]">
+  <td :class="[name, { 'no-content': noContent() }]">
     <span class="cell-header">{{ header }}</span>
     <span class="cell-content">
       <slot />
@@ -11,9 +11,10 @@
 export default {
   props: ["header", "name"],
 
-  computed: {
+  methods: {
     noContent() {
-      return false;
+      const slot = this.$slots.default;
+      return !slot || slot.length === 0;
     }
   }
 };

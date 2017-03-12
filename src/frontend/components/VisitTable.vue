@@ -22,7 +22,7 @@
           </span>
         </cell>
         <cell header="User Agent">
-          {{ visit.userAgent }}
+          <span v-if="visit.userAgent">{{ visit.userAgent }}</span>
         </cell>
       </tr>
     </tbody>
