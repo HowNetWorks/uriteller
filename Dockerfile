@@ -1,4 +1,4 @@
-FROM node:7.7
+FROM node:7
 
 RUN useradd -m app
 COPY . /home/app/uriteller
