@@ -1,4 +1,4 @@
-import app from "../lib/views/app";
+import app from "../app";
 
 export default context => {
   const { view, state } = context;

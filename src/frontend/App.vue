@@ -30,8 +30,7 @@
 </template>
 
 <script>
-import "../../browser/common.scss";
-import "../../browser/visits.scss";
+import "./app.scss";
 
 export default {
   props: ["name"]
