@@ -6,27 +6,25 @@ html {
   font-size: 15px;
 }
 
-body {
-  margin-bottom: 4.5rem;
-  padding-top: 50px;
-}
-
 section {
   padding-top: 1.25em;
   padding-bottom: 1.25em;
 }
 
+#app {
+  margin-bottom: 4.5rem;
+  padding-top: 50px;
+}
+
 .page-index {
-  body {
-    padding-top: 40px;
+  padding-top: 40px;
 
-    @include media-breakpoint-up(md) {
-      padding-top: 55px;
-    }
+  @include media-breakpoint-up(md) {
+    padding-top: 55px;
+  }
 
-    @include media-breakpoint-up(xl) {
-      padding-top: 70px;
-    }
+  @include media-breakpoint-up(xl) {
+    padding-top: 70px;
   }
 
   strong {

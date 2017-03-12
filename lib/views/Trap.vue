@@ -1,5 +1,5 @@
 <template>
-  <app name="page-index">
+  <app name="page-trap">
     <div class="container text-center">
       <section class="row">
         <div class="col-12">
