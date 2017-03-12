@@ -18,7 +18,7 @@
     "vue-server-renderer": "^2.2.2"
   },
   "engines": {
-    "node": "^7.2.0"
+    "node": "^7.7.0"
   },
   "scripts": {
     "start": "BABEL_DISABLE_CACHE=1 babel-node src/backend/${SCRIPT:-app.js}",
