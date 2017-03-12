@@ -10,10 +10,10 @@ import { createBundleRenderer } from "vue-server-renderer";
 import * as taskQueue from "./lib/taskqueue";
 import * as store from "./lib/store";
 import Analytics from "./lib/analytics";
-import bundle from "../build/vue-ssr-bundle.json";
+import bundle from "../../build/vue-ssr-bundle.json";
 
 const renderer = createBundleRenderer(bundle, {
-  template: fs.readFileSync(path.resolve(__dirname, "../build/index.html")).toString()
+  template: fs.readFileSync(path.resolve(__dirname, "../../build/index.html")).toString()
 });
 
 function render(res, context) {
@@ -132,8 +132,8 @@ app.use((req, res, next) => {
   }
 });
 
-app.use("/", express.static(path.join(__dirname, "../static")));
-app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
+app.use("/", express.static(path.join(__dirname, "../../static")));
+app.use("/assets", express.static(path.join(__dirname, "../../build/assets"), { maxAge: "365d" }));
 
 app.get("/", (req, res, next) => {
   analytics.pageView(req).catch(errors.report);

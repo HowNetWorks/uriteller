@@ -22,8 +22,7 @@ const base = {
       {
         test: /\.js$/,
         include: [
-          p("lib"),
-          p("browser")
+          p("src")
         ],
         loader: "babel-loader",
         options: {
@@ -34,8 +33,7 @@ const base = {
       {
         test: /\.vue$/,
         include: [
-          p("lib"),
-          p("browser")
+          p("src")
         ],
         loader: "vue-loader",
         options: {
@@ -91,17 +89,17 @@ const base = {
 
 module.exports = [
   merge(base, {
-    entry: p("browser/browser-entry.js"),
+    entry: p("src/frontend/browser-entry.js"),
     plugins: [
       new HtmlWebpackPlugin({
-        template: p("lib/index.html.ejs")
+        template: p("src/frontend/index.html.ejs")
       }),
       new CleanWebpackPlugin(["build/assets"])
     ]
   }),
   merge(base, {
     target: "node",
-    entry: p("browser/server-entry.js"),
+    entry: p("src/frontend/server-entry.js"),
     output: {
       libraryTarget: "commonjs2"
     },

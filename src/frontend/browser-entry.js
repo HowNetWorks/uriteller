@@ -1,4 +1,4 @@
-import app from "../app";
+import app from "./app";
 
 const { view, state } = window.__INITIAL_STATE__;
 delete window.__INITIAL_STATE__;

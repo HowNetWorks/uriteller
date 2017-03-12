@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import copyToClipboard from "../copy-to-clipboard";
+import copyToClipboard from "../lib/copy-to-clipboard";
 
 export default {
   props: ["text", "disabled"],

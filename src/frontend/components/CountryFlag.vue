@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import countryFlag from "../country-flag";
+import countryFlag from "../lib/country-flag";
 
 export default {
   props: ["country"],

@@ -28,7 +28,7 @@
     "node": "^7.2.0"
   },
   "scripts": {
-    "start": "BABEL_DISABLE_CACHE=1 babel-node server/${SCRIPT:-app.js}",
+    "start": "BABEL_DISABLE_CACHE=1 babel-node src/backend/${SCRIPT:-app.js}",
     "lint": "eslint --ignore-path=.gitignore --ext=.js,.vue .",
     "dev": "NODE_ENV=development webpack -d --watch",
     "build": "NODE_ENV=production webpack -p",

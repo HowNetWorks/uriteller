@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { formatAbsolute, formatRelative } from "../timestamp";
+import { formatAbsolute, formatRelative } from "../lib/timestamp";
 
 export default {
   props: ["timestamp"],

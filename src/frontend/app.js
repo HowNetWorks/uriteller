@@ -1,8 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
-import Index from "./Index.vue";
-import Trap from "./Trap.vue";
-import Monitor from "./Monitor.vue";
+import Index from "./views/Index.vue";
+import Trap from "./views/Trap.vue";
+import Monitor from "./views/Monitor.vue";
 
 Vue.component("app", App);
 Vue.config.productionTip = false;
