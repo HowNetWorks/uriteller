@@ -50,23 +50,20 @@ const base = {
       },
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [
-            {
-              loader: "css-loader",
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: "sass-loader",
-              options: {
-                sourceMap: true
-              }
+        loader: ExtractTextPlugin.extract([
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true
             }
-          ]
-        })
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true
+            }
+          }
+        ])
       },
       {
         test: /\.(eot|woff2|woff|ttf|svg|png)$/,
