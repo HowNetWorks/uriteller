@@ -374,7 +374,7 @@ section {
           float: left;
 
           ~ td {
-            @include clearfix;
+            clear: both;
           }
         }
       }
