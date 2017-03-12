@@ -10,42 +10,45 @@
     "babel-cli": "^6.23.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.2.1",
-    "babel-preset-react": "^6.23.0",
-    "classnames": "^2.2.5",
+    "eslint-plugin-vue": "^2.0.1",
     "express": "^4.15.2",
     "google-cloud": "^0.48.0",
     "helmet": "^3.5.0",
+    "html-webpack-plugin": "^2.28.0",
     "ip-address": "^5.8.2",
-    "react": "^15.4.0",
-    "react-dom": "^15.4.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "vue": "^2.2.2",
+    "vue-loader": "^11.1.4",
+    "vue-server-renderer": "^2.2.2",
+    "vue-ssr-webpack-plugin": "^1.0.2",
+    "vue-template-compiler": "^2.2.2",
+    "webpack-merge": "^4.0.0"
   },
   "engines": {
-    "node": "^6.0.0"
+    "node": "^7.2.0"
   },
   "scripts": {
     "start": "BABEL_DISABLE_CACHE=1 babel-node server/${SCRIPT:-app.jsx}",
-    "lint": "eslint --ignore-path=.gitignore --ext=.js,.jsx .",
+    "lint": "eslint --ignore-path=.gitignore --ext=.js,.vue .",
     "dev": "NODE_ENV=development webpack -d --watch",
     "build": "NODE_ENV=production webpack -p",
     "deploy": "npm run build && gcloud app deploy app.yaml worker.yaml index.yaml --quiet --version=production"
   },
   "devDependencies": {
-    "assets-webpack-plugin": "^3.5.1",
     "babel-core": "^6.23.1",
     "babel-loader": "^6.4.0",
     "bootstrap": "4.0.0-alpha.6",
-    "clean-webpack-plugin": "^0.1.13",
+    "clean-webpack-plugin": "^0.1.15",
     "css-loader": "^0.27.1",
     "eslint": "^3.17.1",
-    "eslint-plugin-react": "^6.10.0",
+    "eslint-plugin-vue": "^2.0.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.1",
     "node-sass": "^4.5.0",
     "sass-loader": "^6.0.3",
+    "style-loader": "^0.13.2",
     "url-loader": "^0.5.8",
-    "webpack": "^2.2.1",
-    "style-loader": "^0.13.2"
+    "webpack": "^2.2.1"
   },
   "babel": {
     "presets": [
@@ -56,8 +59,7 @@
             "node": "current"
           }
         }
-      ],
-      "react"
+      ]
     ],
     "plugins": [
       "transform-object-rest-spread"

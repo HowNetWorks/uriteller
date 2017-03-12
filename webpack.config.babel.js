@@ -1,35 +1,53 @@
 import path from "path";
-import webpack from "webpack";
-import AssetsPlugin from "assets-webpack-plugin";
+import merge from "webpack-merge";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import VueSsrPlugin from "vue-ssr-webpack-plugin";
 import CleanWebpackPlugin from "clean-webpack-plugin";
+import pkg from "./package.json";
 
 // A helper to create paths relative to this config file
 function p(...paths) {
   return path.join(__dirname, ...paths);
 }
 
-const config = {
-  entry: {
-    common: p("browser/common.js"),
-    visits: p("browser/visits.js")
-  },
+const base = {
   output: {
-    path: p("build/assets"),
-    filename: "[name]-[chunkhash].js"
+    path: p("build"),
+    filename: "assets/[chunkhash].js",
+    publicPath: "/"
   },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         include: [
           p("lib"),
           p("browser")
         ],
         loader: "babel-loader",
         options: {
-          presets: [["env", {modules: false}], "react"],
+          presets: [["env", {modules: false, targets: { uglify: true }}]],
           plugins: ["transform-object-rest-spread"]
+        }
+      },
+      {
+        test: /\.vue$/,
+        include: [
+          p("lib"),
+          p("browser")
+        ],
+        loader: "vue-loader",
+        options: {
+          loaders: {
+            js: {
+              loader: "babel-loader",
+              options: {
+                presets: [["env", {modules: false, targets: { uglify: true }}]],
+                plugins: ["transform-object-rest-spread"]
+              }
+            }
+          }
         }
       },
       {
@@ -56,30 +74,40 @@ const config = {
         test: /\.(eot|woff2|woff|ttf|svg|png)$/,
         loader: "url-loader",
         options: {
-          limit: 2048
+          limit: 2048,
+          outputPath: "assets/",
+          publicPath: "/assets/"
         }
       }
     ]
   },
   plugins: [
-    new CleanWebpackPlugin([
-      "build"
-    ]),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "common",
-      filename: "common-[chunkhash].js"
-    }),
     new ExtractTextPlugin({
-      filename: "[name]-[contenthash].css",
-      allChunks: true
-    }),
-    new AssetsPlugin({
-      path: p("build"),
-      filename: "assets.json",
-      prettyPrint: true
+      filename: "assets/[contenthash].css"
     })
   ],
   devtool: "source-map"
 };
 
-export default config;
+module.exports = [
+  merge(base, {
+    entry: p("browser/browser-entry.js"),
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: p("lib/index.html.ejs")
+      }),
+      new CleanWebpackPlugin(["build/assets"])
+    ]
+  }),
+  merge(base, {
+    target: "node",
+    entry: p("browser/server-entry.js"),
+    output: {
+      libraryTarget: "commonjs2"
+    },
+    externals: Object.keys(pkg.dependencies),
+    plugins:[
+      new VueSsrPlugin()
+    ]
+  })
+];

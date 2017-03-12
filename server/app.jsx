@@ -3,33 +3,30 @@ import { errors } from "./lib/gcloud";
 import fs from "fs";
 import url from "url";
 import path from "path";
-import React from "react";
 import helmet from "helmet";
 import express from "express";
+import { createBundleRenderer } from "vue-server-renderer";
 
 import * as taskQueue from "./lib/taskqueue";
 import * as store from "./lib/store";
-import render from "./lib/render";
 import Analytics from "./lib/analytics";
+import bundle from "../build/vue-ssr-bundle.json";
 
-import Layout from "../lib/views/Layout";
-import Trap from "../lib/views/Trap";
-import Index from "../lib/views/Index";
-import Visits from "../lib/views/Visits";
-import EmbeddedJSON from "../lib/views/EmbeddedJSON";
+const renderer = createBundleRenderer(bundle, {
+  template: fs.readFileSync(path.resolve(__dirname, "../build/index.html")).toString()
+});
 
-function loadAssetMap() {
-  const assetMapPath = path.join(__dirname, "../build/assets.json");
-  return JSON.parse(fs.readFileSync(assetMapPath));
-}
-
-let assetMap = loadAssetMap();
-
-function asset(name, kind) {
-  if (process.env.NODE_ENV !== "production") {
-    assetMap = loadAssetMap();
-  }
-  return url.resolve("/assets/", assetMap[name][kind]);
+function render(res, context) {
+  return new Promise((resolve, reject) => {
+    renderer.renderToString(context, (err, html) => {
+      if (err) {
+        reject(err);
+      } else {
+        res.send(html);
+        resolve();
+      }
+    });
+  });
 }
 
 function fullUrl(req, path) {
@@ -136,19 +133,11 @@ app.use((req, res, next) => {
 });
 
 app.use("/", express.static(path.join(__dirname, "../static")));
-
 app.use("/assets", express.static(path.join(__dirname, "../build/assets"), { maxAge: "365d" }));
 
-app.get("/", (req, res) => {
+app.get("/", (req, res, next) => {
   analytics.pageView(req).catch(errors.report);
-
-  const styles = [asset("common", "css")];
-  const scripts = [asset("common", "js")];
-  res.send(render(
-    <Layout title="URI:teller" className="page-index" styles={styles} scripts={scripts}>
-      <Index />
-    </Layout>
-    ));
+  render(res, { view: "index" }).catch(next);
 });
 
 app.get("/new", (req, res, next) => {
@@ -183,32 +172,25 @@ app.get(PAGE_ID_REGEX, (req, res, next) => {
   store.get(id)
     .then(item => {
       if (item && !item.isView) {
-        const styles = [asset("common", "css")];
-        const scripts = [asset("common", "js")];
-        res.status(404).send(render(
-          <Layout title="URI:teller trap" className="page-trap" styles={styles} scripts={scripts}>
-            <Trap baseUrl={fullUrl(req, "/")} />
-          </Layout>
-        ));
+        res.status(404);
+        render(res, {
+          view: "trap",
+          state: { baseUrl: fullUrl(req, "/") }
+        });
       }
 
       if (item && item.isView && !rest) {
         analytics.pageView(req).catch(errors.report);
-
         return getData(req, item.other).then(data => {
-          const initialData = mergeAndClean({
-            js: false,
-            updateUrl: fullUrl(req, id + ".json")
-          }, data);
-
-          const styles = [asset("common", "css"), asset("visits", "css")];
-          const scripts = [asset("common", "js"), asset("visits", "js")];
-          res.send(render(
-            <Layout title="URI:teller monitor" className="page-monitor" styles={styles} scripts={scripts}>
-              <EmbeddedJSON id="initial-data" content={initialData} />
-              <Visits {...initialData} />
-            </Layout>
-          ));
+          render(res, {
+            view: "monitor",
+            state: mergeAndClean(
+              {
+                updateUrl: fullUrl(req, id + ".json")
+              },
+              data
+            )
+          });
         });
       }
 
