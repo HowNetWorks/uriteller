@@ -1,4 +1,4 @@
-<img src="browser/utlogo.png" alt="URI:teller" width="80%" />
+<img src="src/frontend/assets/img/utlogo.png" alt="URI:teller" width="80%" />
 
 [![CircleCI](https://circleci.com/gh/HowNetWorks/uriteller.svg?style=shield)](https://circleci.com/gh/HowNetWorks/uriteller)
 
