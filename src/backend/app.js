@@ -42,20 +42,6 @@ function fullUrl(req, path) {
   return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
 }
 
-function mergeAndClean(...objs) {
-  const result = {};
-  objs.forEach(obj => {
-    Object.keys(obj).forEach(key => {
-      if (obj[key] !== undefined) {
-        result[key] = obj[key];
-      } else {
-        delete result[key];
-      }
-    });
-  });
-  return result;
-}
-
 function extractInfo(req) {
   // Google App Engine passes in an approximate geolocation in header
   // "x-appengine-country" and uses code "ZZ" for unknown locations.
@@ -64,12 +50,12 @@ function extractInfo(req) {
     country = undefined;
   }
 
-  return mergeAndClean({
+  return {
     ip: req.ip,
     referrer: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
     country: country,
     userAgent: req.get("user-agent")
-  });
+  };
 }
 
 const PAGE_ID_REGEX = /^\/([a-zA-Z0-9_-]{22})([./].*)?$/;
@@ -111,10 +97,11 @@ app.get(PAGE_ID_REGEX, (req, res, next) => {
       return taskQueue.publish("trap-topic", {
         target: id,
         timestamp: Date.now(),
-        info: mergeAndClean(extractInfo(req), {
+        info: {
+          ...extractInfo(req),
           protocol: req.secure ? "https" : "http",
           suffix: suffix || undefined
-        })
+        }
       });
     })
     .then(
@@ -164,10 +151,11 @@ function getData(req, target, cursor) {
       trapUrl: fullUrl(req, target),
       cursor: cursor,
       visits: visits.map(entity => {
-        return mergeAndClean(entity.info, {
+        return {
+          ...entity.info,
           protocol: entity.info.protocol || "https",
           timestamp: entity.timestamp
-        });
+        };
       })
     };
   });
@@ -192,12 +180,10 @@ app.get(PAGE_ID_REGEX, (req, res, next) => {
         return getData(req, item.other).then(data => {
           render(res, {
             view: "monitor",
-            state: mergeAndClean(
-              {
-                updateUrl: fullUrl(req, id + ".json")
-              },
-              data
-            )
+            state: {
+              updateUrl: fullUrl(req, id + ".json"),
+              ...data
+            }
           });
         });
       }
