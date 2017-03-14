@@ -18,13 +18,21 @@ const renderer = createBundleRenderer(bundle, {
 
 function render(res, context) {
   return new Promise((resolve, reject) => {
-    renderer.renderToString(context, (err, html) => {
-      if (err) {
-        reject(err);
-      } else {
-        res.send(html);
-        resolve();
-      }
+    const stream = renderer.renderToStream(context);
+    stream.once("data", data => {
+      res.set("Content-Type", "text/html");
+      res.write(data);
+
+      stream.on("data", data => {
+        res.write(data);
+      });
+    });
+    stream.on("end", () => {
+      res.end();
+      resolve();
+    });
+    stream.on("error", err => {
+      reject(err);
     });
   });
 }
