@@ -2,7 +2,7 @@ import path from "path";
 import merge from "webpack-merge";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import VueSsrPlugin from "vue-ssr-webpack-plugin";
+import VueSsrServerPlugin from "vue-ssr-webpack-plugin";
 import CleanWebpackPlugin from "clean-webpack-plugin";
 import pkg from "./package.json";
 
@@ -101,7 +101,7 @@ module.exports = [
     },
     externals: Object.keys(pkg.dependencies),
     plugins:[
-      new VueSsrPlugin()
+      new VueSsrServerPlugin()
     ]
   })
 ];
