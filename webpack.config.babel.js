@@ -70,8 +70,7 @@ const base = {
         loader: "url-loader",
         options: {
           limit: 2048,
-          outputPath: "assets/",
-          publicPath: "/assets/"
+          outputPath: "assets/"
         }
       }
     ]
