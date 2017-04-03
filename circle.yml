@@ -1,13 +1,21 @@
 machine:
   node:
     version: 7
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   services:
     - docker
 
+dependencies:
+  override:
+    - yarn
+  cache_directories:
+    - ~/.cache/yarn
+
 test:
   override:
-    - npm run lint
-    - NODE_ENV=production npm run build
+    - yarn lint
+    - NODE_ENV=production yarn build
     - >
       docker build --tag=app --rm=false
       --build-arg GA_TRACKING_ID=${GA_TRACKING_ID}

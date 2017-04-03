@@ -41,10 +41,10 @@ $ gcloud config set project <PROJECT_ID>
 
 ### App Dependencies
 
-Install Node.js dependencies:
+Install Node.js dependencies. The following command line examples use [`yarn`](https://yarnpkg.com/) but `npm` works just as well.
 
 ```sh
-$ npm install
+$ yarn
 ```
 
 
@@ -55,7 +55,7 @@ $ npm install
 Watch and rebuild client side assets on changes:
 
 ```sh
-$ npm run dev
+$ yarn dev
 ```
 
 ### Server
@@ -71,18 +71,11 @@ $ gcloud beta auth application-default login
 Run `app.js` in port 8080:
 
 ```sh
-$ GCLOUD_PROJECT=<PROJECT_ID> APP_BASE_URL=http://localhost:8080/ npm start
+$ GCLOUD_PROJECT=<PROJECT_ID> APP_BASE_URL=http://localhost:8080/ yarn start
 ```
 
 Run `worker.js` in port 8081:
 
 ```sh
-$ GCLOUD_PROJECT=<PROJECT_ID> SCRIPT=worker.js npm start
-```
-
-
-## Deployment
-
-```sh
-$ npm run deploy
+$ GCLOUD_PROJECT=<PROJECT_ID> SCRIPT=worker.js yarn start
 ```
