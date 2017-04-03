@@ -65,7 +65,7 @@ Credentials](https://cloud.google.com/docs/authentication#getting_credentials_fo
 note that you need to get these only once for your environment:
 
 ```sh
-$ gcloud beta auth application-default login
+$ gcloud auth application-default login
 ```
 
 Run `app.js` in port 8080:
