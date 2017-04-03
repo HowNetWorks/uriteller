@@ -1,6 +1,6 @@
-FROM node:7-alpine
+FROM node:7-slim
 
-RUN addgroup -S app && adduser -S -G app app
+RUN useradd -m app
 COPY . /home/app/uriteller
 RUN chown -R app:app /home/app/uriteller
 
