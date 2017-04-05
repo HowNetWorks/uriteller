@@ -74,7 +74,7 @@ Run `app.js` in port 8080:
 $ GCLOUD_PROJECT=<PROJECT_ID> APP_BASE_URL=http://localhost:8080/ yarn start
 ```
 
-Run `worker.js` in port 8081:
+Run `worker.js` instead:
 
 ```sh
 $ GCLOUD_PROJECT=<PROJECT_ID> SCRIPT=worker.js yarn start
