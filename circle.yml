@@ -16,23 +16,12 @@ test:
   override:
     - yarn lint
     - NODE_ENV=production yarn build
-    - >
-      docker build --tag=app --rm=false
-      --build-arg GA_TRACKING_ID=${GA_TRACKING_ID}
-      --build-arg GCLOUD_PROJECT=${GCLOUD_PROJECT}
-      --build-arg APP_BASE_URL=${APP_BASE_URL}
-      .
+    - docker build --pull --tag=app --rm=false .
 
 deployment:
-  production:
-    branch: production
+  gcloud:
+    tag: /^v[0-9]+\.[0-9]+\.[0-9]+$/
     commands:
-      - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
-      - gcloud config set project ${GCLOUD_PROJECT}
-      - echo ${GCLOUD_SERVICE_KEY} | base64 --decode > ${HOME}/gcloud-service-key.json
-      - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-      - docker tag app gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
-      - gcloud docker -- push gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
-      - gcloud app deploy index.yaml --quiet
-      - gcloud app deploy app.yaml --quiet --no-promote --version=${CIRCLE_BRANCH}-${CIRCLE_SHA1::16} --image-url=gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
-      - gcloud app deploy worker.yaml --quiet --no-promote --version=${CIRCLE_BRANCH}-${CIRCLE_SHA1::16} --image-url=gcr.io/${GCLOUD_PROJECT}/${CIRCLE_BRANCH}-${CIRCLE_SHA1::16}
+      - docker tag app ${DOCKER_HUB_IMAGE}:${CIRCLE_TAG}
+      - docker login -e ${DOCKER_HUB_EMAIL} -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASS}
+      - docker push ${DOCKER_HUB_IMAGE}:${CIRCLE_TAG}
