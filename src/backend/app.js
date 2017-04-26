@@ -42,22 +42,6 @@ function fullUrl(req, path) {
   return url.resolve(baseUrl, url.resolve(req.baseUrl, path));
 }
 
-function extractInfo(req) {
-  // Google App Engine passes in an approximate geolocation in header
-  // "x-appengine-country" and uses code "ZZ" for unknown locations.
-  let country = req.get("x-appengine-country");
-  if (!country || country === "ZZ") {
-    country = undefined;
-  }
-
-  return {
-    ip: req.ip,
-    referrer: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
-    country: country,
-    userAgent: req.get("user-agent")
-  };
-}
-
 const PAGE_ID_REGEX = /^\/([a-zA-Z0-9_-]{22})([./].*)?$/;
 
 const analytics = new Analytics(process.env.GA_TRACKING_ID);
@@ -65,22 +49,6 @@ const analytics = new Analytics(process.env.GA_TRACKING_ID);
 const app = express();
 app.set("json spaces", 2);
 app.set("trust proxy", true);
-
-// Fix x-forwarded-for and x-forwarded-proto for App Engine Flexible.
-app.use((req, res, next) => {
-  const https = req.get("x-appengine-https");
-  if (https) {
-    req.headers["x-forwarded-proto"] = https.toLowerCase() === "on" ? "https" : "http";
-  }
-
-  const ip = req.get("x-appengine-user-ip");
-  if (ip) {
-    req.headers["x-forwarded-for"] = ip;
-  }
-
-  next();
-});
-
 app.use(helmet());
 
 app.get("/healthz", (req, res) => {
@@ -102,7 +70,9 @@ app.get(PAGE_ID_REGEX, (req, res, next) => {
         target: id,
         timestamp: Date.now(),
         info: {
-          ...extractInfo(req),
+          ip: req.ip,
+          referrer: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
+          userAgent: req.get("user-agent"),
           protocol: req.secure ? "https" : "http",
           suffix: suffix || undefined
         }
