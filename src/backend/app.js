@@ -83,6 +83,10 @@ app.use((req, res, next) => {
 
 app.use(helmet());
 
+app.get("/healthz", (req, res) => {
+  res.sendStatus(200);
+});
+
 app.get(PAGE_ID_REGEX, (req, res, next) => {
   const id = req.params[0];
   store.get(id)
