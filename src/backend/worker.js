@@ -1,24 +1,8 @@
 import { errors } from "./lib/gcloud";
 
-import helmet from "helmet";
-import express from "express";
 import * as store from "./lib/store";
 import * as taskQueue from "./lib/taskqueue";
 import * as resolve from "./lib/resolve";
-
-const app = express();
-app.use(helmet());
-
-app.get("/_ah/health", (req, res) => {
-  res.sendStatus(200);
-});
-
-const server = app.listen(process.env.PORT || 8080, () => {
-  const addr = server.address();
-
-  // eslint-disable-next-line no-console
-  console.log("Listening on port %s...", addr.port);
-});
 
 taskQueue.subscribe("trap-topic", "trap-subscription", (err, msg) => {
   if (err) {
