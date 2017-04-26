@@ -1,7 +1,3 @@
-if (!process.env.GCLOUD_PROJECT) {
-  process.env.GCLOUD_PROJECT = process.env.GAE_LONG_APP_ID;
-}
-
 let errorHandler = {
   report(err) {
     // eslint-disable-next-line no-console
@@ -20,6 +16,4 @@ if (process.env.NODE_ENV === "production") {
 
 export const errors = errorHandler;
 
-export default require("google-cloud")({
-  projectId: process.env.GCLOUD_PROJECT || process.env.GAE_LONG_APP_ID
-});
+export default require("google-cloud")();
