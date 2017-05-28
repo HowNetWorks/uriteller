@@ -15,6 +15,7 @@ import Analytics from "./lib/analytics";
 import bundle from "../../build/vue-ssr-bundle.json";
 
 const renderer = createBundleRenderer(bundle, {
+  runInNewContext: "once",
   template: fs.readFileSync(path.resolve(__dirname, "../../build/index.html")).toString()
 });
 
