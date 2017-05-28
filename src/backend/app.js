@@ -12,7 +12,7 @@ import { createBundleRenderer } from "vue-server-renderer";
 import * as taskQueue from "./lib/taskqueue";
 import * as store from "./lib/store";
 import Analytics from "./lib/analytics";
-import bundle from "../../build/vue-ssr-bundle.json";
+import bundle from "../../build/vue-ssr-server-bundle.json";
 
 const renderer = createBundleRenderer(bundle, {
   runInNewContext: "once",
