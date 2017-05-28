@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: hownetworks/uriteller:v0.2.0
+        image: hownetworks/uriteller:v0.2.2
         ports:
         - containerPort: 8080
           name: http
@@ -70,11 +70,11 @@ spec:
     spec:
       containers:
       - name: app
-        image: hownetworks/uriteller:v0.2.0
+        image: hownetworks/uriteller:v0.2.2
         env:
         - name: SCRIPT
           value: worker.js
         - name: WHEREABOUTS_URL
           value: http://localhost:8080
       - name: whereabouts
-        image: hownetworks/whereabouts:v0.3.0
+        image: hownetworks/whereabouts:v0.3.1
