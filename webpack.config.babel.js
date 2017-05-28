@@ -1,7 +1,7 @@
 import path from "path";
 import merge from "webpack-merge";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
-import HtmlWebpackPlugin from "html-webpack-plugin";
+import VueSsrClientPlugin from "vue-server-renderer/client-plugin";
 import VueSsrServerPlugin from "vue-server-renderer/server-plugin";
 import CleanPlugin from "clean-webpack-plugin";
 import CompressionPlugin from "compression-webpack-plugin";
@@ -87,10 +87,8 @@ module.exports = [
   merge(base, {
     entry: p("src/frontend/browser-entry.js"),
     plugins: [
-      new HtmlWebpackPlugin({
-        template: p("src/frontend/index.html.ejs")
-      }),
-      new CleanPlugin(["build/assets"])
+      new CleanPlugin(["build/assets"]),
+      new VueSsrClientPlugin()
     ]
   }),
   merge(base, {

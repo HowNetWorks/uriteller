@@ -1,6 +1,5 @@
 import { errors } from "./lib/gcloud";
 
-import fs from "fs";
 import url from "url";
 import path from "path";
 import helmet from "helmet";
@@ -12,11 +11,26 @@ import { createBundleRenderer } from "vue-server-renderer";
 import * as taskQueue from "./lib/taskqueue";
 import * as store from "./lib/store";
 import Analytics from "./lib/analytics";
-import bundle from "../../build/vue-ssr-server-bundle.json";
+import serverBundle from "../../build/vue-ssr-server-bundle.json";
+import clientManifest from "../../build/vue-ssr-client-manifest.json";
 
-const renderer = createBundleRenderer(bundle, {
+const renderer = createBundleRenderer(serverBundle, {
   runInNewContext: "once",
-  template: fs.readFileSync(path.resolve(__dirname, "../../build/index.html")).toString()
+  clientManifest,
+  template: `
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <title>URI:teller</title>
+      </head>
+      <body>
+        <!--vue-ssr-outlet-->
+      </body>
+    </html>
+  `
 });
 
 function render(res, context) {
