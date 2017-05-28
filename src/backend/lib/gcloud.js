@@ -11,9 +11,16 @@ let errorHandler = {
 if (process.env.NODE_ENV === "production") {
   require("@google-cloud/trace-agent").start();
   require("@google-cloud/debug-agent").start();
-  errorHandler = require("@google/cloud-errors").start();
+  errorHandler = require("@google-cloud/error-reporting")();
 }
 
 export const errors = errorHandler;
 
-export default require("google-cloud")();
+export default {
+  pubsub() {
+    return require("@google-cloud/pubsub")();
+  },
+  datastore() {
+    return require("@google-cloud/datastore")();
+  }
+};
