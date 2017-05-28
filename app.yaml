@@ -1,0 +1,80 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: app-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "uriteller-ingress"
+spec:
+  tls:
+  - secretName: tls-secret
+  backend:
+    serviceName: app
+    servicePort: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  type: NodePort
+  selector:
+    name: app
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        name: app
+    spec:
+      containers:
+      - name: app
+        image: hownetworks/uriteller:v0.1.3
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: APP_BASE_URL
+          value: "https://uriteller.io"
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        name: worker
+    spec:
+      containers:
+      - name: app
+        image: hownetworks/uriteller:v0.1.3
+        env:
+        - name: SCRIPT
+          value: worker.js
+        - name: WHEREABOUTS_URL
+          value: http://localhost:8080
+      - name: whereabouts
+        image: hownetworks/whereabouts:v0.3.0
