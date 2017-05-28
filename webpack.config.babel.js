@@ -3,7 +3,8 @@ import merge from "webpack-merge";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import VueSsrServerPlugin from "vue-ssr-webpack-plugin";
-import CleanWebpackPlugin from "clean-webpack-plugin";
+import CleanPlugin from "clean-webpack-plugin";
+import CompressionPlugin from "compression-webpack-plugin";
 import pkg from "./package.json";
 
 // A helper to create paths relative to this config file
@@ -78,7 +79,8 @@ const base = {
   plugins: [
     new ExtractTextPlugin({
       filename: "assets/[contenthash].css"
-    })
+    }),
+    new CompressionPlugin()
   ],
   devtool: "source-map"
 };
@@ -90,7 +92,7 @@ module.exports = [
       new HtmlWebpackPlugin({
         template: p("src/frontend/index.html.ejs")
       }),
-      new CleanWebpackPlugin(["build/assets"])
+      new CleanPlugin(["build/assets"])
     ]
   }),
   merge(base, {

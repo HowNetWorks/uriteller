@@ -5,6 +5,8 @@ import url from "url";
 import path from "path";
 import helmet from "helmet";
 import express from "express";
+import compression from "compression";
+import expressStaticGzip from "express-static-gzip";
 import { createBundleRenderer } from "vue-server-renderer";
 
 import * as taskQueue from "./lib/taskqueue";
@@ -50,6 +52,7 @@ const app = express();
 app.set("json spaces", 2);
 app.set("trust proxy", true);
 app.use(helmet());
+app.use(compression());
 
 app.get("/healthz", (req, res) => {
   res.sendStatus(200);
@@ -102,7 +105,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", express.static(path.join(__dirname, "../../static")));
-app.use("/assets", express.static(path.join(__dirname, "../../build/assets"), { maxAge: "365d" }));
+app.use("/assets", expressStaticGzip(path.join(__dirname, "../../build/assets"), { maxAge: "365d" }));
 
 app.get("/", (req, res, next) => {
   analytics.pageView(req).catch(errors.report);
