@@ -2,7 +2,7 @@ import path from "path";
 import merge from "webpack-merge";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import VueSsrServerPlugin from "vue-ssr-webpack-plugin";
+import VueSsrServerPlugin from "vue-server-renderer/server-plugin";
 import CleanPlugin from "clean-webpack-plugin";
 import CompressionPlugin from "compression-webpack-plugin";
 import pkg from "./package.json";
@@ -22,27 +22,25 @@ const base = {
     rules: [
       {
         test: /\.js$/,
-        include: [
-          p("src")
-        ],
+        include: [p("src")],
         loader: "babel-loader",
         options: {
-          presets: [["env", {modules: false, targets: { uglify: true }}]],
+          presets: [["env", { modules: false, targets: { uglify: true } }]],
           plugins: ["transform-object-rest-spread"]
         }
       },
       {
         test: /\.vue$/,
-        include: [
-          p("src")
-        ],
+        include: [p("src")],
         loader: "vue-loader",
         options: {
           loaders: {
             js: {
               loader: "babel-loader",
               options: {
-                presets: [["env", {modules: false, targets: { uglify: true }}]],
+                presets: [
+                  ["env", { modules: false, targets: { uglify: true } }]
+                ],
                 plugins: ["transform-object-rest-spread"]
               }
             }
@@ -102,8 +100,6 @@ module.exports = [
       libraryTarget: "commonjs2"
     },
     externals: Object.keys(pkg.dependencies),
-    plugins:[
-      new VueSsrServerPlugin()
-    ]
+    plugins: [new VueSsrServerPlugin()]
   })
 ];
