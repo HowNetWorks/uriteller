@@ -66,9 +66,8 @@ const base = {
       },
       {
         test: /\.(eot|woff2|woff|ttf|svg|png)$/,
-        loader: "url-loader",
+        loader: "file-loader",
         options: {
-          limit: 2048,
           outputPath: "assets/"
         }
       }
