@@ -15,10 +15,8 @@
     "helmet": "^3.6.1",
     "ip-address": "^5.8.8",
     "request": "^2.81.0",
-    "vue-server-renderer": "^2.4.1"
-  },
-  "engines": {
-    "node": "^7.7.0"
+    "vue-server-renderer": "^2.4.1",
+    "grpc": "^1.4.1"
   },
   "scripts": {
     "start": "node src/backend/${SCRIPT:-app.js}",
