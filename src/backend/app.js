@@ -202,6 +202,6 @@ app.use(errors.express);
 const server = app.listen(process.env.PORT || 8080, () => {
   const addr = server.address();
 
-    // eslint-disable-next-line no-console
+  // eslint-disable-next-line no-console
   console.log("Listening on port %s...", addr.port);
 });

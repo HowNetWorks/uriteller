@@ -18,7 +18,7 @@ module.exports = {
     "semi": ["error", "always"],
     "no-trailing-spaces": "error",
     "eol-last": "error",
-    "no-multiple-empty-lines": ["error", { "max": 1, "maxBOF": 0 }],
+    "no-multiple-empty-lines": ["error", { "max": 1 }],
 
     // Possible Errors
     "no-unsafe-negation": "error",

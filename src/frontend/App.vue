@@ -21,8 +21,8 @@
         </div>
 
         <div class="social">
-          <a class="icon github" href="https://github.com/HowNetWorks/uriteller" title="URI:teller GitHub repository" target="_blank" rel="noopener noreferrer" />
-          <a class="icon twitter" href="https://twitter.com/HowNetWorksIO" title="HowNetWorks in Twitter" target="_blank" rel="noopener noreferrer" />
+          <a class="icon github" href="https://github.com/HowNetWorks/uriteller" title="URI:teller GitHub repository" target="_blank" rel="noopener noreferrer"></a>
+          <a class="icon twitter" href="https://twitter.com/HowNetWorksIO" title="HowNetWorks in Twitter" target="_blank" rel="noopener noreferrer"></a>
         </div>
       </div>
     </footer>
