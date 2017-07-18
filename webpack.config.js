@@ -1,11 +1,11 @@
-import path from "path";
-import merge from "webpack-merge";
-import ExtractTextPlugin from "extract-text-webpack-plugin";
-import VueSsrClientPlugin from "vue-server-renderer/client-plugin";
-import VueSsrServerPlugin from "vue-server-renderer/server-plugin";
-import CleanPlugin from "clean-webpack-plugin";
-import CompressionPlugin from "compression-webpack-plugin";
-import pkg from "./package.json";
+const path = require("path");
+const merge = require("webpack-merge");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const VueSsrClientPlugin = require("vue-server-renderer/client-plugin");
+const VueSsrServerPlugin = require("vue-server-renderer/server-plugin");
+const CleanPlugin = require("clean-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
+const pkg = require("./package.json");
 
 // A helper to create paths relative to this config file
 function p(...paths) {

@@ -9,9 +9,6 @@
     "@google-cloud/error-reporting": "^0.1.2",
     "@google-cloud/pubsub": "^0.12.0",
     "@google-cloud/trace-agent": "^2.0.0",
-    "babel-cli": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
     "compression": "^1.6.2",
     "express": "^4.15.3",
     "express-static-gzip": "^0.2.2",
@@ -24,7 +21,7 @@
     "node": "^7.7.0"
   },
   "scripts": {
-    "start": "BABEL_DISABLE_CACHE=1 babel-node src/backend/${SCRIPT:-app.js}",
+    "start": "node src/backend/${SCRIPT:-app.js}",
     "lint": "eslint --ignore-path=.gitignore --ext=.js,.vue .",
     "dev": "NODE_ENV=development webpack -d --watch",
     "build": "NODE_ENV=production webpack -p"
@@ -32,6 +29,8 @@
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.5.1",
     "bootstrap": "4.0.0-alpha.6",
     "clean-webpack-plugin": "^0.1.16",
     "compression-webpack-plugin": "^0.4.0",
@@ -47,20 +46,5 @@
     "vue-template-compiler": "^2.3.3",
     "webpack": "^2.6.1",
     "webpack-merge": "^4.1.0"
-  },
-  "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ]
-    ],
-    "plugins": [
-      "transform-object-rest-spread"
-    ]
   }
 }

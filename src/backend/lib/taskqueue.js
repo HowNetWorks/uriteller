@@ -1,4 +1,4 @@
-import gcloud from "./gcloud";
+const gcloud = require("./gcloud");
 
 const pubsub = gcloud.pubsub();
 
@@ -23,7 +23,7 @@ function _subscribe(topic, subName) {
   return topic.subscribe(subName, config).then(data => data[0]);
 }
 
-export function subscribe(topicName, subName, handler) {
+exports.subscribe = function(topicName, subName, handler) {
   return _topic(topicName)
     .then(topic => _subscribe(topic, subName))
     .then(
@@ -43,8 +43,8 @@ export function subscribe(topicName, subName, handler) {
           handler(err, null);
         }
     );
-}
+};
 
-export function publish(topicName, data) {
+exports.publish = function(topicName, data) {
   return _topic(topicName).then(topic => topic.publish(data));
-}
+};

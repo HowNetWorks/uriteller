@@ -1,9 +1,5 @@
 module.exports = {
-  "plugins": [
-    "vue"
-  ],
   "env": {
-    "browser": true,
     "es6": true,
     "node": true
   },
@@ -11,11 +7,7 @@ module.exports = {
     "eslint:recommended"
   ],
   "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": 2017,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
+    "ecmaVersion": 2017
   },
   "rules": {
     // Stylistic Issues
@@ -26,7 +18,7 @@ module.exports = {
     "semi": ["error", "always"],
     "no-trailing-spaces": "error",
     "eol-last": "error",
-    "no-multiple-empty-lines": ["error", {"max": 1, "maxBOF": 0}],
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxBOF": 0 }],
 
     // Possible Errors
     "no-unsafe-negation": "error",

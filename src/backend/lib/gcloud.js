@@ -14,13 +14,12 @@ if (process.env.NODE_ENV === "production") {
   errorHandler = require("@google-cloud/error-reporting")();
 }
 
-export const errors = errorHandler;
-
-export default {
+module.exports = {
   pubsub() {
     return require("@google-cloud/pubsub")();
   },
   datastore() {
     return require("@google-cloud/datastore")();
-  }
+  },
+  errors: errorHandler
 };

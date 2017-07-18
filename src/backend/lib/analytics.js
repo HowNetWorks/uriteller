@@ -1,9 +1,9 @@
-import net from "net";
-import https from "https";
-import crypto from "crypto";
-import querystring from "querystring";
-import ipAddress from "ip-address";
-import request from "request";
+const net = require("net");
+const https = require("https");
+const crypto = require("crypto");
+const querystring = require("querystring");
+const ipAddress = require("ip-address");
+const request = require("request");
 
 function clean(obj) {
   const result = {};
@@ -32,7 +32,7 @@ function anonymizeIP(ip) {
   return void 0;
 }
 
-export default class {
+module.exports = class {
   constructor(trackingId) {
     this._trackingId = trackingId;
     this._timeout = 1000;
@@ -113,7 +113,7 @@ export default class {
     this._request();
   }
 
-  _send(req, ...overrides) {
+  _send(req, overrides = {}) {
     if (!this._trackingId) {
       return Promise.resolve();
     }
@@ -122,20 +122,23 @@ export default class {
     const ua = req.get("user-agent");
     const cid = crypto.createHash("sha256").update(ip + ua).digest("hex");
 
-    const data = clean({
-      v: "1",
-      tid: this._trackingId,
-      cid: cid,
+    const data = clean(
+      Object.assign(
+        {
+          v: "1",
+          tid: this._trackingId,
+          cid: cid,
 
-      dh: req.hostname,
-      dp: req.path,
-      dr: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
-      uip: ip,
-      aip: "1",
-      ua: ua,
-
-      ...overrides
-    });
+          dh: req.hostname,
+          dp: req.path,
+          dr: req.get("referrer"), // Express considers "referrer" and "referer" interchangeable
+          uip: ip,
+          aip: "1",
+          ua: ua
+        },
+        overrides
+      )
+    );
 
     return new Promise((resolve, reject) => {
       this._push({
@@ -161,4 +164,4 @@ export default class {
       ev: value
     });
   }
-}
+};

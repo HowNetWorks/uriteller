@@ -1,18 +1,18 @@
-import crypto from "crypto";
-import gcloud from "./gcloud";
+const crypto = require("crypto");
+const gcloud = require("./gcloud");
 
 const datastore = gcloud.datastore();
 
 // Return a string id with at least `n` bits of randomness. The returned string
 // will contain only characters [a-zA-Z0-9_-].
-function genPageId(n=128) {
+function genPageId(n = 128) {
   const bytes = crypto.randomBytes(Math.ceil(n / 8.0));
   return bytes.toString("base64").replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
 }
 
 const pageIdCache = new Map();
 
-export function get(id) {
+exports.get = function(id) {
   if (pageIdCache.has(id)) {
     return Promise.resolve(pageIdCache.get(id));
   }
@@ -25,9 +25,9 @@ export function get(id) {
       }
       return result;
     });
-}
+};
 
-export function create() {
+exports.create = function() {
   function tryCreate(resolve, reject) {
     const trapId = genPageId();
     const viewId = genPageId();
@@ -77,7 +77,7 @@ export function create() {
   return new Promise((resolve, reject) => {
     tryCreate(resolve, reject);
   });
-}
+};
 
 const seqIdCache = new Map();
 
@@ -130,7 +130,7 @@ function seqIdKey(target, seqId) {
 const visits = new Map();
 const VISIT_CHUNK_COUNT = 10;
 
-export function visit(target, timestamp, info) {
+exports.visit = function(target, timestamp, info) {
   function insert(seqId) {
     const queue = visits.get(target);
     if (!queue) {
@@ -183,7 +183,7 @@ export function visit(target, timestamp, info) {
       getSeqId(target).then(insert);
     }
   });
-}
+};
 
 function getSeqIds(target, seqIds) {
   if (seqIds.length === 0) {
@@ -193,7 +193,7 @@ function getSeqIds(target, seqIds) {
   return datastore.get(keys).then(data => data[0]);
 }
 
-export function list(target, cursor=0) {
+exports.list = function(target, cursor = 0) {
   const query = datastore.createQuery("Visit")
     .filter("target", target)
     .filter("seqId", ">=", cursor)
@@ -236,4 +236,4 @@ export function list(target, cursor=0) {
         visits: visits
       };
     });
-}
+};

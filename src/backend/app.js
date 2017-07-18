@@ -1,18 +1,18 @@
-import { errors } from "./lib/gcloud";
+const { errors } = require("./lib/gcloud");
 
-import url from "url";
-import path from "path";
-import helmet from "helmet";
-import express from "express";
-import compression from "compression";
-import expressStaticGzip from "express-static-gzip";
-import { createBundleRenderer } from "vue-server-renderer";
+const url = require("url");
+const path = require("path");
+const helmet = require("helmet");
+const express = require("express");
+const compression = require("compression");
+const expressStaticGzip = require("express-static-gzip");
+const { createBundleRenderer } = require("vue-server-renderer");
 
-import * as taskQueue from "./lib/taskqueue";
-import * as store from "./lib/store";
-import Analytics from "./lib/analytics";
-import serverBundle from "../../build/vue-ssr-server-bundle.json";
-import clientManifest from "../../build/vue-ssr-client-manifest.json";
+const taskQueue = require("./lib/taskqueue");
+const store = require("./lib/store");
+const Analytics = require("./lib/analytics");
+const serverBundle = require("../../build/vue-ssr-server-bundle.json");
+const clientManifest = require("../../build/vue-ssr-client-manifest.json");
 
 const renderer = createBundleRenderer(serverBundle, {
   runInNewContext: "once",
@@ -143,11 +143,10 @@ function getData(req, target, cursor) {
       trapUrl: fullUrl(req, target),
       cursor: cursor,
       visits: visits.map(entity => {
-        return {
-          ...entity.info,
+        return Object.assign({}, entity.info, {
           protocol: entity.info.protocol || "https",
           timestamp: entity.timestamp
-        };
+        });
       })
     };
   });
@@ -172,10 +171,12 @@ app.get(PAGE_ID_REGEX, (req, res, next) => {
         return getData(req, item.other).then(data => {
           render(res, {
             view: "monitor",
-            state: {
-              updateUrl: fullUrl(req, id + ".json"),
-              ...data
-            }
+            state: Object.assign(
+              {
+                updateUrl: fullUrl(req, id + ".json")
+              },
+              data
+            )
           });
         });
       }

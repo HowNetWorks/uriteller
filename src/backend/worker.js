@@ -1,10 +1,10 @@
-import { errors } from "./lib/gcloud";
-import net from "net";
-import { URL } from "url";
-import request from "request";
-import * as store from "./lib/store";
-import * as taskQueue from "./lib/taskqueue";
-import * as resolve from "./lib/resolve";
+const { errors } = require("./lib/gcloud");
+const net = require("net");
+const { URL } = require("url");
+const request = require("request");
+const store = require("./lib/store");
+const taskQueue = require("./lib/taskqueue");
+const resolve = require("./lib/resolve");
 
 const WHEREABOUTS_URL = process.env.WHEREABOUTS_URL || "http://localhost:8080";
 
