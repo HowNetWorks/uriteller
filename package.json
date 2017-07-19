@@ -1,6 +1,6 @@
 {
   "name": "uriteller",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "license": "MIT",
   "dependencies": {
@@ -12,11 +12,11 @@
     "compression": "^1.7.0",
     "express": "^4.15.3",
     "express-static-gzip": "^0.3.0",
+    "grpc": "^1.4.1",
     "helmet": "^3.6.1",
     "ip-address": "^5.8.8",
     "request": "^2.81.0",
-    "vue-server-renderer": "^2.4.1",
-    "grpc": "^1.4.1"
+    "vue-server-renderer": "^2.4.1"
   },
   "scripts": {
     "start": "node src/backend/${SCRIPT:-app.js}",
