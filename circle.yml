@@ -1,27 +1,25 @@
-machine:
-  node:
-    version: 8
-  environment:
-    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
-  services:
-    - docker
-
-dependencies:
-  override:
-    - yarn
-  cache_directories:
-    - ~/.cache/yarn
-
-test:
-  override:
-    - yarn lint
-    - NODE_ENV=production yarn build
-    - docker build --pull --tag=app --rm=false .
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:17.06.0-ce
+    working_directory: ~/workdir
+    steps:
+      - run: apk add --no-cache git openssh-client
+      - checkout
+      - setup_remote_docker:
+          version: 17.06.0-ce
+      - run: docker build -t ${DOCKER_HUB_IMAGE} .
+      - deploy:
+          name: Deploy the image to Docker Hub
+          command: |
+            if echo -n "${CIRCLE_TAG}" | grep -Eq ^v[0-9]+\.[0-9]+\.[0-9]+$; then
+              docker tag ${DOCKER_HUB_IMAGE} ${DOCKER_HUB_IMAGE}:${CIRCLE_TAG}
+              docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASS}
+              docker push ${DOCKER_HUB_IMAGE}:${CIRCLE_TAG}
+              docker push ${DOCKER_HUB_IMAGE}
+            fi
 
 deployment:
-  gcloud:
-    tag: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-    commands:
-      - docker tag app ${DOCKER_HUB_IMAGE}:${CIRCLE_TAG}
-      - docker login -e ${DOCKER_HUB_EMAIL} -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASS}
-      - docker push ${DOCKER_HUB_IMAGE}:${CIRCLE_TAG}
+  workaround_for_circleci_2_0:
+    tag: /.*/
