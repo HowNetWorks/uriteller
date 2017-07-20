@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const merge = require("webpack-merge");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const VueSsrClientPlugin = require("vue-server-renderer/client-plugin");
@@ -86,6 +87,7 @@ module.exports = [
   merge(base, {
     entry: p("src/frontend/browser-entry.js"),
     plugins: [
+      new webpack.optimize.ModuleConcatenationPlugin(),
       new CleanPlugin(["build/assets"]),
       new VueSsrClientPlugin()
     ]
