@@ -42,7 +42,10 @@ const base = {
           extractCSS: true,
           loaders: {
             js: babel
-          }
+          },
+          postcss: [
+            require("autoprefixer")()
+          ]
         }
       },
       {
