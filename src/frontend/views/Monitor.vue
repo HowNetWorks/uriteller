@@ -66,10 +66,6 @@ export default {
     };
   },
 
-  beforeMount() {
-    this.serverSide = false;
-  },
-
   mounted() {
     const baseUrl = this.updateUrl;
     const cursor = this.cursor;
@@ -92,6 +88,7 @@ export default {
       this.visits = visits;
       this.updateUrl = updateUrl;
       this.cursor = cursor;
+      this.serverSide = false;
     }
   },
 
