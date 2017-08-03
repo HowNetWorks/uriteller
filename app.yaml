@@ -41,13 +41,13 @@ spec:
     spec:
       containers:
       - name: app
-        image: hownetworks/uriteller:v0.2.4
+        image: hownetworks/uriteller:v0.2.9
         ports:
         - containerPort: 8080
           name: http
-        env:
-        - name: APP_BASE_URL
-          value: "https://uriteller.io"
+        envFrom:
+        - configMapRef:
+            name: uriteller-config
         readinessProbe:
           httpGet:
             path: /healthz
@@ -70,11 +70,11 @@ spec:
     spec:
       containers:
       - name: app
-        image: hownetworks/uriteller:v0.2.4
+        image: hownetworks/uriteller:v0.2.9
         env:
         - name: SCRIPT
           value: worker.js
         - name: WHEREABOUTS_URL
           value: http://localhost:8080
       - name: whereabouts
-        image: hownetworks/whereabouts:v0.3.1
+        image: hownetworks/whereabouts:v0.3.3
