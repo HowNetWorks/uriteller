@@ -1,6 +1,7 @@
 <template>
-  <span v-if="flag" class="country-flag">{{ flag }}</span>
-  <span v-else></span>
+  <span>
+    <span v-if="flag" class="country-flag">{{ flag }}</span>
+  </span>
 </template>
 
 <script>
