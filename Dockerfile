@@ -1,4 +1,4 @@
-FROM node:8 AS builder
+FROM node:8.5 AS builder
 COPY . /app
 RUN useradd -m app \
   && chown -R app:app /app
@@ -7,10 +7,10 @@ WORKDIR /app
 RUN yarn --no-progress \
   && yarn build \
   && yarn --production --no-progress \
-  && yarn clean \
+  && yarn autoclean \
   && tar cfz build.tar.gz build node_modules
 
-FROM node:8-slim
+FROM node:8.5-slim
 COPY . /app
 COPY --from=builder /app/build.tar.gz /app
 RUN useradd -m app \
