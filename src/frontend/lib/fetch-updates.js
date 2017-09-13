@@ -1,5 +1,3 @@
-import url from "url";
-
 function timeout(delay) {
   return new Promise(resolve => {
     setTimeout(resolve, delay);
@@ -45,10 +43,11 @@ function fetchJSON(url, timeout=15000) {
 }
 
 function fetchLoop(baseUrl, cursor, interval, minInterval, maxInterval, currentErr, callback) {
-  const parsedUrl = url.parse(baseUrl, true);
-  parsedUrl.query.cursor = cursor;
+  const a = document.createElement("a");
+  a.href = baseUrl;
+  a.search = typeof cursor === "undefined" ? "" : `cursor=${cursor}`;
 
-  const updateUrl = url.format(parsedUrl);
+  const updateUrl = a.href;
   timeout(interval)
     .then(() => fetchJSON(updateUrl))
     .then(
