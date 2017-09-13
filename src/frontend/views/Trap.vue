@@ -34,7 +34,7 @@ export default {
   },
 
   methods: {
-    setState({ baseUrl }) {
+    setData({ baseUrl }) {
       this.baseUrl = baseUrl;
     }
   }

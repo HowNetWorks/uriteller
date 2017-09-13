@@ -83,7 +83,7 @@ export default {
   },
 
   methods: {
-    setState({ trapUrl, visits, cursor, updateUrl }) {
+    setData({ trapUrl, visits, cursor, updateUrl }) {
       this.trapUrl = trapUrl;
       this.visits = visits;
       this.updateUrl = updateUrl;

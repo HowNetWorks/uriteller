@@ -7,6 +7,7 @@ const express = require("express");
 const compression = require("compression");
 const expressStaticGzip = require("express-static-gzip");
 const { createBundleRenderer } = require("vue-server-renderer");
+const serialize = require("serialize-javascript");
 
 const taskQueue = require("./lib/taskqueue");
 const store = require("./lib/store");
@@ -17,6 +18,7 @@ const clientManifest = require("../../build/vue-ssr-client-manifest.json");
 const renderer = createBundleRenderer(serverBundle, {
   runInNewContext: "once",
   clientManifest,
+  inject: false, // Inject the assets manually, incl. the <script type="application/json"> tag.
   template: `
     <!doctype html>
     <html lang="en">
@@ -25,17 +27,33 @@ const renderer = createBundleRenderer(serverBundle, {
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="icon" type="image/png" href="/favicon.png" />
         <title>URI:teller</title>
+        {{{ renderResourceHints() }}}
+        {{{ renderStyles() }}}
+        {{{ renderInitialState() }}}
       </head>
       <body>
         <!--vue-ssr-outlet-->
+        {{{ renderScripts() }}}
       </body>
     </html>
   `
 });
 
-function render(res, context) {
+function render(res, state) {
   return new Promise((resolve, reject) => {
-    const stream = renderer.renderToStream(context);
+    const stream = renderer.renderToStream({
+      state,
+      renderInitialState() {
+        if (state === undefined) {
+          return "";
+        }
+        return `
+          <script id="initial-state" type="application/json">
+            ${serialize(state, { isJSON: true })}
+          </script>
+        `;
+      }
+    });
     stream.once("data", data => {
       res.set("Content-Type", "text/html");
       res.write(data);
@@ -66,7 +84,18 @@ const analytics = new Analytics(process.env.GA_TRACKING_ID);
 const app = express();
 app.set("json spaces", 2);
 app.set("trust proxy", true);
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"]
+      }
+    },
+    referrerPolicy: {
+      policy: "no-referrer"
+    }
+  })
+);
 app.use(compression());
 
 app.get("/healthz", (req, res) => {
@@ -162,7 +191,7 @@ app.get(PAGE_ID_REGEX, (req, res, next) => {
         res.status(404);
         render(res, {
           view: "trap",
-          state: { baseUrl: fullUrl(req, "/") }
+          data: { baseUrl: fullUrl(req, "/") }
         });
       }
 
@@ -171,7 +200,7 @@ app.get(PAGE_ID_REGEX, (req, res, next) => {
         return getData(req, item.other).then(data => {
           render(res, {
             view: "monitor",
-            state: Object.assign(
+            data: Object.assign(
               {
                 updateUrl: fullUrl(req, id + ".json")
               },

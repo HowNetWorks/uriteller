@@ -1,6 +1,11 @@
 import app from "./app";
 
-const { view, state } = window.__INITIAL_STATE__;
-delete window.__INITIAL_STATE__;
+const element = document.getElementById("initial-state");
 
-app(view, state).then(vm => vm.$mount("#app"));
+let state = {};
+if (element) {
+  state = JSON.parse(element.innerHTML);
+}
+
+const { view, data } = state;
+app(view, data).then(vm => vm.$mount("#app"));

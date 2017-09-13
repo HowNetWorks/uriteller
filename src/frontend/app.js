@@ -12,15 +12,15 @@ views.set("index", Index);
 views.set("trap", Trap);
 views.set("monitor", Monitor);
 
-export default function(name, state) {
+export default function(name, data) {
   const view = views.get(name);
   if (!view) {
     throw new Error("unknown view");
   }
 
   const vm = new Vue(view);
-  if (vm.setState) {
-    return Promise.resolve(vm.setState(state)).then(() => vm);
+  if (vm.setData) {
+    return Promise.resolve(vm.setData(data)).then(() => vm);
   }
   return Promise.resolve(vm);
 }

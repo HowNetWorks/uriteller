@@ -15,6 +15,7 @@
     "helmet": "^3.8.1",
     "ip-address": "^5.8.8",
     "request": "^2.81.0",
+    "serialize-javascript": "^1.4.0",
     "vue-server-renderer": "^2.4.2"
   },
   "scripts": {
