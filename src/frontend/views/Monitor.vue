@@ -80,6 +80,8 @@ export default {
         this.liveUpdateError = null;
       }
     });
+
+    this.serverSide = false;
   },
 
   methods: {
@@ -88,7 +90,6 @@ export default {
       this.visits = visits;
       this.updateUrl = updateUrl;
       this.cursor = cursor;
-      this.serverSide = false;
     }
   },
 
