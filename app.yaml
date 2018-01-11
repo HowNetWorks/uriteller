@@ -4,12 +4,20 @@ metadata:
   name: app-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "uriteller-ingress"
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "gce"
 spec:
   tls:
   - secretName: tls-secret
-  backend:
-    serviceName: app
-    servicePort: http
+    hosts:
+    - uriteller.io
+  rules:
+  - host: uriteller.io
+    http:
+      paths:
+      - backend:
+          serviceName: app
+          servicePort: http
 
 ---
 
@@ -78,3 +86,40 @@ spec:
           value: http://localhost:8080
       - name: whereabouts
         image: hownetworks/whereabouts:v0.3.3
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kube-lego
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: kube-lego
+    spec:
+      containers:
+      - name: kube-lego
+        image: jetstack/kube-lego:0.1.5
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 25m
+        env:
+        - name: LEGO_EMAIL
+          value: devel@hownetworks.io
+        - name: LEGO_URL
+          value: https://acme-v01.api.letsencrypt.org/directory
+        - name: LEGO_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
