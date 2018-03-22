@@ -1,10 +1,8 @@
 const path = require("path");
-const webpack = require("webpack");
 const merge = require("webpack-merge");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueSsrClientPlugin = require("vue-server-renderer/client-plugin");
 const VueSsrServerPlugin = require("vue-server-renderer/server-plugin");
-const CleanPlugin = require("clean-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const pkg = require("./package.json");
 
@@ -20,6 +18,8 @@ const babel = {
     plugins: ["transform-object-rest-spread"]
   }
 };
+
+const css = [MiniCssExtractPlugin.loader, "css-loader"];
 
 const base = {
   output: {
@@ -39,13 +39,12 @@ const base = {
         include: [p("src")],
         loader: "vue-loader",
         options: {
-          extractCSS: true,
           loaders: {
-            js: babel
+            js: babel,
+            css: css,
+            scss: [...css, "sass-loader"]
           },
-          postcss: [
-            require("autoprefixer")()
-          ]
+          postcss: [require("autoprefixer")()]
         }
       },
       {
@@ -58,8 +57,8 @@ const base = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin({
-      filename: "assets/[contenthash].css"
+    new MiniCssExtractPlugin({
+      filename: "assets/[chunkhash].css"
     }),
     new CompressionPlugin()
   ]
@@ -68,11 +67,7 @@ const base = {
 module.exports = [
   merge(base, {
     entry: p("src/frontend/browser-entry.js"),
-    plugins: [
-      new webpack.optimize.ModuleConcatenationPlugin(),
-      new CleanPlugin(["build/assets"]),
-      new VueSsrClientPlugin()
-    ],
+    plugins: [new VueSsrClientPlugin()],
     devtool: "source-map"
   }),
   merge(base, {
