@@ -22,7 +22,7 @@
 
         <div class="social">
           <a class="icon github" href="https://github.com/HowNetWorks/uriteller" title="URI:teller GitHub repository" target="_blank" rel="noopener noreferrer"></a>
-          <a class="icon twitter" href="https://twitter.com/HowNetWorksIO" title="HowNetWorks in Twitter" target="_blank" rel="noopener noreferrer"></a>
+          <a class="icon birdie" href="https://twitter.com/HowNetWorksIO" title="HowNetWorks in Twitter" target="_blank" rel="noopener noreferrer"></a>
         </div>
       </div>
     </footer>
@@ -147,7 +147,8 @@ section {
       @include media-breakpoint-up(sm) {
         height: 260px;
 
-        &.comic-1, &.comic-2 {
+        &.comic-1,
+        &.comic-2 {
           margin-bottom: 10px;
         }
 
@@ -164,7 +165,8 @@ section {
         height: 300px;
         margin-bottom: 0;
 
-        &.comic-1, &.comic-2 {
+        &.comic-1,
+        &.comic-2 {
           background-position: center;
         }
       }
@@ -270,17 +272,17 @@ section {
           padding-left: 0;
         }
 
-        &.twitter:before {
+        &.birdie::before {
           content: "\f099";
         }
 
-        &.github:before {
+        &.github::before {
           content: "\f09b";
         }
       }
     }
 
-    .logo:before {
+    .logo::before {
       display: inline-block;
 
       background-image: url("assets/img/hnwlogo.svg");
